@@ -1,2 +1,2 @@
-# UC-Burkey-CS61B-DataStructure
+# UC-Berkeley-CS61B-DataStructure
 just for study
