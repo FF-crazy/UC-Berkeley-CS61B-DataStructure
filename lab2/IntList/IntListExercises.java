@@ -36,16 +36,19 @@ public class IntListExercises {
    * Returns the max value in the IntList starting at L.
    */
   public static int max(IntList L) {
-    int max = L.first;
-    IntList p = L.rest;
-    while (p != null) {
-      if (p.first > max) {
-        max = p.first;
-      }
-      p = p.rest;
+    if (L != null) {
+      int max = L.first;
+      IntList p = L;
+      while (p != null) {
+        if (p.first > max) {
+          max = p.first;
+        }
+        p = p.rest;
 
+      }
+      return max;
     }
-    return max;
+    return 0;
   }
 
   /**
