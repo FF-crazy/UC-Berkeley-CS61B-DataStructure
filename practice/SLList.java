@@ -1,48 +1,48 @@
-public class SLList {
+public class SLList<typename> {
 
-  public static class IntNode {
+  public class StuffNode {
 
-    public int item;
-    public IntNode next;
+    public typename item;
+    public StuffNode next;
 
-    public IntNode(int f, IntNode r) {
+    public StuffNode(typename f, StuffNode r) {
       item = f;
       next = r;
     }
 
-    public IntNode(int f) {
+    public StuffNode(typename f) {
       item = f;
       next = null;
     }
 
   }
 
-  private IntNode first;
+  private StuffNode first;
   private int length;
 
-  public SLList(int x) {
-    first = new IntNode(-1, null);
-    first.next = new IntNode(x, null);
+  public SLList(typename x) {
+    first = new StuffNode(null, null);
+    first.next = new StuffNode(x, null);
     length++;
   }
 
   public SLList() {
 
-    first = new IntNode(-1, null);
+    first = new StuffNode(null, null);
 
   }
 
-  public void addFirst(int x) {
-    first.next = new IntNode(x, first.next);
+  public void addFirst(typename x) {
+    first.next = new StuffNode(x, first.next);
     length++;
   }
 
-  public void addLast(int x) {
-    IntNode p = first;
+  public void addLast(typename x) {
+    StuffNode p = first;
     while (p.next != null) {
       p = p.next;
     }
-    p.next = new IntNode(x, null);
+    p.next = new StuffNode(x, null);
     length++;
   }
 
@@ -50,15 +50,19 @@ public class SLList {
     return length;
   }
 
+  public typename getFirst() {
+   return first.next.item;
+  }
+
   public void printList() {
-    IntNode p = first.next;
+    StuffNode p = first.next;
     for (; p != null; p = p.next) {
       System.out.println(p.item + " ->");
     }
   }
 
   public static void main(String[] args) {
-    SLList slList = new SLList();
+    SLList<Integer> slList = new SLList<>();
     System.out.println(slList.getLength());
     slList.addLast(1);
     slList.addFirst(2);
