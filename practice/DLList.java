@@ -21,6 +21,7 @@ public class DLList<typename> {
       item = i;
       next = n.next;
       n.next = this;
+      next.previous = this;
     }
   }
 
@@ -30,9 +31,11 @@ public class DLList<typename> {
 
   public DLList(typename x) {
     first = new StuffNode(null);
-    first.next = new StuffNode(x, first);
-    last = new StuffNode(null, first.next);
+    first.next = new StuffNode(x);
+    first.next.previous = first;
+    last = new StuffNode(null);
     first.next.next = last;
+    last.previous = first.next;
     length++;
   }
 
@@ -52,8 +55,6 @@ public class DLList<typename> {
       temp = temp.next;
     }
     temp.next = new StuffNode(x, temp);
-    temp.next.next = last;
-    last.previous = temp.next;
     length++;
   }
 
@@ -65,14 +66,12 @@ public class DLList<typename> {
     StuffNode temp = first.next;
     for (int i = 0; i < position; i++, temp = temp.next);
     StuffNode addone = new StuffNode(x, temp);
-    addone.next.previous = addone;
     length++;
 
   }
 
   public void insert(typename x) {
     StuffNode temp = new StuffNode(x, first);
-    temp.next.previous = temp;
     length++;
   }
 
