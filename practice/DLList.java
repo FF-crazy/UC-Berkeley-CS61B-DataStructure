@@ -1,7 +1,9 @@
-public class DLList<typename> {
+public class DLList<typename> implements List<typename>{
 
   /**
    * 我发现这个哨兵头节点几乎没啥用，其实应该添加一个哨兵尾节点， 这样就不怕了。 添加了哨兵尾节点，确实减少了很多重复代码，但是诸如getFirst，printList一类的方法就没有办法。
+   */
+  /* 10.12我第一次玩炸了自己代码，靠ctrl+z抢救了代码，这并不好笑，以后要更加熟练使用git来保护代码。
    */
 
   public class StuffNode {
@@ -45,10 +47,12 @@ public class DLList<typename> {
     length = 0;
   }
 
+  @Override
   public int getLength() {
     return length;
   }
 
+  @Override
   public void append(typename x) {
     StuffNode temp = first;
     while (temp.next.item != null) {
@@ -58,6 +62,7 @@ public class DLList<typename> {
     length++;
   }
 
+  @Override
   public void insert(typename x, int position) {
     if (position > length - 1 || position < 0) {
       System.out.println("Position out of range");
@@ -70,6 +75,7 @@ public class DLList<typename> {
 
   }
 
+  @Override
   public void insert(typename x) {
     StuffNode temp = new StuffNode(x, first);
     length++;
@@ -83,6 +89,7 @@ public class DLList<typename> {
     length--;
   }
 
+  @Override
   public void deletePosition(int position) {
     if (position < 0 || position > length - 1) {
       System.out.println("Position out of range ");
@@ -93,6 +100,7 @@ public class DLList<typename> {
     delete(temp);
   }
 
+  @Override
   public void deleteElement(typename x) {
     StuffNode temp = first.next;
     while (temp.item != null && temp.item != x) {
@@ -105,6 +113,7 @@ public class DLList<typename> {
     delete(temp);
   }
 
+  @Override
   public void changeByPosition(typename x, int position) {
     if (position > length - 1) {
       System.out.println("Position out range");
@@ -115,6 +124,7 @@ public class DLList<typename> {
     temp.item = x;
   }
 
+  @Override
   public typename checkByPosition(int position) {
     if (position > length - 1) {
       System.out.println("Position out range");
@@ -125,6 +135,7 @@ public class DLList<typename> {
     return temp.item;
   }
 
+  @Override
   public int checkByElement(typename x) {
     StuffNode temp = first.next;
     int index = 0;
@@ -139,6 +150,7 @@ public class DLList<typename> {
     return -1;
   }
 
+  @Override
   public typename getFirst() {
     if (length == 0) {
       System.out.println("No stuff in it, please add one");
@@ -147,6 +159,7 @@ public class DLList<typename> {
     return first.next.item;
   }
 
+  @Override
   public void printList() {
     StuffNode temp = first.next;
     if (length == 0) {
@@ -169,7 +182,7 @@ public class DLList<typename> {
 
 
   public static void main(String[] args) {
-    DLList<Integer> dlList = new DLList<>(1);
+    List<Integer> dlList = new DLList<>(1);
     dlList.append(2);
     dlList.insert(0);
     dlList.insert(3, dlList.getLength() - 1);

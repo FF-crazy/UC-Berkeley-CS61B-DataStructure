@@ -1,4 +1,4 @@
-public class SLList<typename> {
+public class SLList<typename> implements List<typename>{
 
   public class StuffNode {
 
@@ -32,12 +32,14 @@ public class SLList<typename> {
 
   }
 
-  public void addFirst(typename x) {
+  @Override
+  public void append(typename x) {
     first.next = new StuffNode(x, first.next);
     length++;
   }
 
-  public void addLast(typename x) {
+  @Override
+  public void insert(typename x) {
     StuffNode p = first;
     while (p.next != null) {
       p = p.next;
@@ -46,14 +48,17 @@ public class SLList<typename> {
     length++;
   }
 
+  @Override
   public int getLength() {
     return length;
   }
 
+  @Override
   public typename getFirst() {
    return first.next.item;
   }
 
+  @Override
   public void printList() {
     StuffNode p = first.next;
     for (; p != null; p = p.next) {
@@ -61,11 +66,42 @@ public class SLList<typename> {
     }
   }
 
+  @Override
+  public void deletePosition(int pos){
+
+  }
+
+  @Override
+  public void deleteElement(typename i){
+
+  }
+
+  @Override
+  public int checkByElement(typename i){
+
+    return 0;
+  }
+
+  @Override
+  public typename checkByPosition(int x){
+    return null;
+  }
+
+  @Override
+  public void changeByPosition(typename x, int position){
+
+  }
+
+  @Override
+  public void insert(typename i, int pos){
+
+  }
+
   public static void main(String[] args) {
     SLList<Integer> slList = new SLList<>();
     System.out.println(slList.getLength());
-    slList.addLast(1);
-    slList.addFirst(2);
+    slList.insert(1);
+    slList.append(2);
     System.out.println(slList.getLength());
     slList.printList();
   }
