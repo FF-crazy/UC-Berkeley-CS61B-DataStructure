@@ -1,7 +1,6 @@
 package timingtest;
 
 import edu.princeton.cs.algs4.Stopwatch;
-import java.time.LocalDateTime;
 
 /**
  * Created by hug.
@@ -31,6 +30,7 @@ public class TimeAList {
     AList<Double> times = new AList<>();
     AList<Integer> opCounts = new AList<>();
 
+
     for (int i = 1000; i <= 128000; i *= 2) {
       Ns.addLast(i);
 //      opCounts.addLast((int) Math.ceil(Math.log((double) i / 100) / Math.log(2)));
@@ -39,12 +39,14 @@ public class TimeAList {
 
     for (int i = 0; i < Ns.size(); i++) {
       AList<Integer> temp = new AList<>();
-      double start = System.currentTimeMillis();
+//      double start = System.currentTimeMillis();
+      Stopwatch sw = new Stopwatch();
       for (int j = 0; j < Ns.get(i); j++) {
         temp.addLast(j);
       }
-      double end = System.currentTimeMillis();
-      times.addLast(end - start);
+//      double end = System.currentTimeMillis();
+      double time = sw.elapsedTime();
+      times.addLast(time);
     }
       printTimingTable(Ns, times, opCounts);
   }

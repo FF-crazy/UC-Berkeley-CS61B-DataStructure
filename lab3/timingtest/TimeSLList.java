@@ -38,12 +38,14 @@ public class TimeSLList {
             for (int j = 0; j < Ns.get(i); j++) {
                 temp.addLast(j);
             }
-            double start = System.currentTimeMillis();
+//            double start = System.currentTimeMillis();
+          Stopwatch sw = new Stopwatch();
             for (int j = 0; j < opCounts.get(i); j++) {
                 temp.getLast();
             }
-            double end = System.currentTimeMillis();
-            times.addLast(end - start);
+//            double end = System.currentTimeMillis();
+          double time = sw.elapsedTime();
+            times.addLast(time);
         }
         printTimingTable(Ns, times, opCounts);
     }
