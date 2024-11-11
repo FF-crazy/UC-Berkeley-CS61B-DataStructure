@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Arrays;
 
-public class ArrayDeque<Item> {
+public class ArrayDeque<Item> implements Deque<Item> {
 
   private Item[] array;
   private int size;
@@ -16,11 +16,13 @@ public class ArrayDeque<Item> {
     array[0] = item;
     size = 1;
   }
+
   private void resize(int capacity) {
     Item[] temp = (Item[]) new Object[capacity];
     System.arraycopy(temp, 0, array, 0, size);
     array = temp;
   }
+  @Override
   public void addFirst(Item item) {
     Item[] temp = (Item[]) new Object[array.length + 1];
     System.arraycopy(temp, 1, array, 0, size);
@@ -28,6 +30,7 @@ public class ArrayDeque<Item> {
     array = temp;
     size++;
   }
+  @Override
   public void addLast(Item item) {
     if (size == array.length) {
       resize(size * 2);
@@ -35,18 +38,18 @@ public class ArrayDeque<Item> {
     array[size] = item;
     size++;
   }
-  public boolean isEmpty() {
-    return size == 0;
-  }
+  @Override
   public int size() {
     return size;
   }
+  @Override
   public void printDeque() {
     for (int i = 0; i < size; i++) {
       System.out.print(array[i] + " ");
     }
     System.out.println();
   }
+  @Override
   public Item removeFirst() {
     if (size == 0) {
       return null;
@@ -60,6 +63,7 @@ public class ArrayDeque<Item> {
     }
     return res;
   }
+  @Override
   public Item removeLast() {
     if (size == 0) {
       return null;
@@ -70,6 +74,7 @@ public class ArrayDeque<Item> {
     }
     return temp;
   }
+  @Override
   public Item get(int index) {
     if (index > size) {
       return null;

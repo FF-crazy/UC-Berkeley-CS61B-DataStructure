@@ -1,6 +1,6 @@
 package deque;
 
-public class LinkedListDeque<Item> {
+public class LinkedListDeque<Item> implements Deque<Item> {
 
   public class Node<Item> {
     public Node<Item> prev;
@@ -34,37 +34,36 @@ public class LinkedListDeque<Item> {
     end = first;
     size = 0;
   }
+  @Override
   public void addFirst(Item item) {
     Node<Item> temp = new Node<>(item);
     if (first == null) {
       first = temp;
       end = temp;
-      size++;
     } else {
       temp.next = first;
       first.prev = temp;
       first = temp;
-      size++;
     }
+    size++;
 
   }
+  @Override
   public void addLast(Item item) {
     if (end == null) {
       first = new Node<>(item);
       end = first;
-      size++;
     } else {
       end = new Node<>(item, end);
-      size++;
     }
+    size++;
 
   }
-  public boolean isEmpty() {
-    return size == 0;
-  }
+  @Override
   public int size() {
     return size;
   }
+  @Override
   public void printDeque() {
     Node<Item> temp = first;
     while (temp != null) {
@@ -73,6 +72,7 @@ public class LinkedListDeque<Item> {
     }
     System.out.println();
   }
+  @Override
   public Item removeFirst() {
     if (isEmpty()) {
       return null;
@@ -83,6 +83,7 @@ public class LinkedListDeque<Item> {
       return temp.item;
     }
   }
+  @Override
   public Item removeLast() {
     if (isEmpty()) {
       return null;
@@ -93,6 +94,7 @@ public class LinkedListDeque<Item> {
       return temp.item;
     }
   }
+  @Override
   public Item get(int index) {
     if (index > size - 1) {
       return null;
