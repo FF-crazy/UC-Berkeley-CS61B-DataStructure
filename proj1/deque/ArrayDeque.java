@@ -19,13 +19,13 @@ public class ArrayDeque<Item> implements Deque<Item> {
 
   private void resize(int capacity) {
     Item[] temp = (Item[]) new Object[capacity];
-    System.arraycopy(temp, 0, array, 0, size);
+    System.arraycopy(array, 0, temp, 0, size);
     array = temp;
   }
   @Override
   public void addFirst(Item item) {
     Item[] temp = (Item[]) new Object[array.length + 1];
-    System.arraycopy(temp, 1, array, 0, size);
+    System.arraycopy(array, 0, temp, 1, size);
     temp[0] = item;
     array = temp;
     size++;
@@ -56,7 +56,7 @@ public class ArrayDeque<Item> implements Deque<Item> {
     }
     Item res = array[0];
     Item[] temp = (Item[]) new Object[array.length - 1];
-    System.arraycopy(temp, 0, array, 1, --size);
+    System.arraycopy(array, 1, temp, 0, --size);
     array = temp;
     if ((double) size / (double) array.length < 0.25 && size >= 1) {
       resize(array.length / 4);
@@ -68,7 +68,7 @@ public class ArrayDeque<Item> implements Deque<Item> {
     if (size == 0) {
       return null;
     }
-    Item temp = array[size--];
+    Item temp = array[--size];
     if ((double) size / (double) array.length < 0.25 && size >= 1) {
       resize(array.length / 4);
     }
