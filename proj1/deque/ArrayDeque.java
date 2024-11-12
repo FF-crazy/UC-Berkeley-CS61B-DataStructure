@@ -121,10 +121,5 @@ public class ArrayDeque<T> implements Deque<T> {
     return true;
   }
 
-  public static void main(String[] argv) {
-    Deque<Integer> deque = new ArrayDeque<>();
-    deque.addFirst(1);
-    deque.addLast(3);
-    deque.printDeque();
-  }
+
 }

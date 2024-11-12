@@ -5,6 +5,7 @@ import java.util.Iterator;
 public class LinkedListDeque<T> implements Deque<T> {
 
   private class Node<T> {
+
     public Node<T> prev;
     public T item;
     public Node<T> next;
@@ -24,6 +25,7 @@ public class LinkedListDeque<T> implements Deque<T> {
   }
 
   private class LinkedListDequeIterator implements Iterator<T> {
+
     private Node<T> current;
 
     LinkedListDequeIterator() {
@@ -47,11 +49,11 @@ public class LinkedListDeque<T> implements Deque<T> {
   private Node<T> first;
   private Node<T> end;
 
-  public LinkedListDeque(T item) {
-    first = new Node<>(item);
-    end = first;
-    size = 1;
-  }
+//  public LinkedListDeque(T item) {
+//    first = new Node<>(item);
+//    end = first;
+//    size = 1;
+//  }
 
   public LinkedListDeque() {
     first = null;
@@ -92,9 +94,6 @@ public class LinkedListDeque<T> implements Deque<T> {
     return size;
   }
 
-  public boolean isEmpty() {
-    return size == 0;
-  }
 
   @Override
   public void printDeque() {
@@ -168,6 +167,7 @@ public class LinkedListDeque<T> implements Deque<T> {
   public Iterator<T> iterator() {
     return new LinkedListDequeIterator();
   }
+
   @Override
   public boolean equals(Object o) {
     if (o == null) {
@@ -191,11 +191,4 @@ public class LinkedListDeque<T> implements Deque<T> {
     return true;
   }
 
-  public static void main(String[] args) {
-    LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
-    for (int i = 0; i < 10; i++) {
-      lld1.addLast(i);
-    }
-    lld1.printDeque();
-  }
 }

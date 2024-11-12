@@ -29,9 +29,6 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
     return max(comparator);
   }
 
-  public static void main(String[] a) {
-//    Deque<Integer> deque = new MaxArrayDeque<>();
 
-  }
 
 }
