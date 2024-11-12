@@ -1,6 +1,6 @@
 package deque;
 
-import java.util.Arrays;
+import java.util.Iterator;
 
 public class ArrayDeque<Item> implements Deque<Item> {
 
@@ -80,5 +80,29 @@ public class ArrayDeque<Item> implements Deque<Item> {
       return null;
     }
     return array[index];
+  }
+  private class ArrayDequeIterator implements Iterator<Item> {
+    private int index;
+
+    ArrayDequeIterator() {
+      index = 0;
+    }
+
+    public boolean hasNext() {
+      return index < size;
+    }
+
+    public Item next() {
+      Item item = get(index);
+      index += 1;
+      return item;
+    }
+  }
+
+  public static void main(String[] argv) {
+    Deque<Integer> deque = new ArrayDeque<>();
+    deque.addFirst(1);
+    deque.addLast(3);
+    deque.printDeque();
   }
 }

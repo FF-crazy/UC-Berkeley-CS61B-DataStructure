@@ -7,6 +7,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
   private Comparator<T> comparator;
 
   public MaxArrayDeque(Comparator<T> comparator) {
+    super();
     this.comparator = comparator;
   }
   public T max(Comparator<T> c) {
@@ -22,8 +23,15 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
     return get(maxIndex);
   }
   public T max() {
+    if (isEmpty()) {
+      return null;
+    }
     return max(comparator);
   }
 
+  public static void main(String[] a) {
+//    Deque<Integer> deque = new MaxArrayDeque<>();
+
+  }
 
 }
