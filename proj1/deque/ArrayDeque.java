@@ -76,7 +76,7 @@ public class ArrayDeque<Item> implements Deque<Item> {
   }
   @Override
   public Item get(int index) {
-    if (index > size) {
+    if (index > size - 1 || index < 0) {
       return null;
     }
     return array[index];

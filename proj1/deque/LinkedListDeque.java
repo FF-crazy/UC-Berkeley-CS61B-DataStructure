@@ -96,7 +96,7 @@ public class LinkedListDeque<Item> implements Deque<Item> {
   }
   @Override
   public Item get(int index) {
-    if (index > size - 1) {
+    if (index > size - 1 || index < 0) {
       return null;
     }
     Node<Item> temp = first;
