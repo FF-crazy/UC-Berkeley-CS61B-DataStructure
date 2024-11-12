@@ -2,40 +2,40 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<Item> implements Deque<Item> {
+public class ArrayDeque<T> implements Deque<T> {
 
-  private Item[] array;
+  private T[] array;
   private int size;
 
   public ArrayDeque() {
-    array = (Item[]) new Object[8];
+    array = (T[]) new Object[8];
     size = 0;
   }
-  public ArrayDeque(Item item) {
-    array = (Item[]) new Object[8];
-    array[0] = item;
+  public ArrayDeque(T t) {
+    array = (T[]) new Object[8];
+    array[0] = t;
     size = 1;
   }
 
   private void resize(int capacity) {
-    Item[] temp = (Item[]) new Object[capacity];
+    T[] temp = (T[]) new Object[capacity];
     System.arraycopy(array, 0, temp, 0, size);
     array = temp;
   }
   @Override
-  public void addFirst(Item item) {
-    Item[] temp = (Item[]) new Object[array.length + 1];
+  public void addFirst(T t) {
+    T[] temp = (T[]) new Object[array.length + 1];
     System.arraycopy(array, 0, temp, 1, size);
-    temp[0] = item;
+    temp[0] = t;
     array = temp;
     size++;
   }
   @Override
-  public void addLast(Item item) {
+  public void addLast(T t) {
     if (size == array.length) {
       resize(size * 2);
     }
-    array[size] = item;
+    array[size] = t;
     size++;
   }
   @Override
@@ -50,12 +50,12 @@ public class ArrayDeque<Item> implements Deque<Item> {
     System.out.println();
   }
   @Override
-  public Item removeFirst() {
+  public T removeFirst() {
     if (size == 0) {
       return null;
     }
-    Item res = array[0];
-    Item[] temp = (Item[]) new Object[array.length - 1];
+    T res = array[0];
+    T[] temp = (T[]) new Object[array.length - 1];
     System.arraycopy(array, 1, temp, 0, --size);
     array = temp;
     if ((double) size / (double) array.length < 0.25 && size >= 1) {
@@ -64,24 +64,24 @@ public class ArrayDeque<Item> implements Deque<Item> {
     return res;
   }
   @Override
-  public Item removeLast() {
+  public T removeLast() {
     if (size == 0) {
       return null;
     }
-    Item temp = array[--size];
+    T temp = array[--size];
     if ((double) size / (double) array.length < 0.25 && size >= 1) {
       resize(array.length / 4);
     }
     return temp;
   }
   @Override
-  public Item get(int index) {
+  public T get(int index) {
     if (index > size - 1 || index < 0) {
       return null;
     }
     return array[index];
   }
-  private class ArrayDequeIterator implements Iterator<Item> {
+  private class ArrayDequeIterator implements Iterator<T> {
     private int index;
 
     ArrayDequeIterator() {
@@ -92,11 +92,33 @@ public class ArrayDeque<Item> implements Deque<Item> {
       return index < size;
     }
 
-    public Item next() {
-      Item item = get(index);
+    public T next() {
+      T t = get(index);
       index += 1;
-      return item;
+      return t;
     }
+  }
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    }
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof ArrayDeque)) {
+      return false;
+    }
+    ArrayDeque<?> ad = (ArrayDeque<?>) o;
+    if (ad.size() != size) {
+      return false;
+    }
+    for (int i = 0; i < size; i++) {
+      if (ad.get(i) != get(i)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public static void main(String[] argv) {

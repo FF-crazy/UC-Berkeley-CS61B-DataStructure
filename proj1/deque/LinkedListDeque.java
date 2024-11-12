@@ -2,148 +2,197 @@ package deque;
 
 import java.util.Iterator;
 
-public class LinkedListDeque<Item> implements Deque<Item>{
+public class LinkedListDeque<T> implements Deque<T> {
 
-  public class Node<Item> {
-    public Node<Item> prev;
-    public Item item;
-    public Node<Item> next;
+  private class Node<T> {
+    public Node<T> prev;
+    public T item;
+    public Node<T> next;
 
-    public Node(Item i) {
-      prev = null;
+    public Node(T i) {
       item = i;
+      prev = null;
       next = null;
     }
-    public Node(Item i, Node<Item> before) {
+
+    public Node(T i, Node<T> before) {
       item = i;
       prev = before;
       before.next = this;
       next = null;
     }
   }
-  private class LinkedListDequeIterator implements Iterator<Item> {
 
-    private Node<Item> p;
+  private class LinkedListDequeIterator implements Iterator<T> {
+    private Node<T> current;
 
     LinkedListDequeIterator() {
-      p = first.next;
+      current = first;
     }
 
+    @Override
     public boolean hasNext() {
-      return p == first;
+      return current != null;
     }
 
-    public Item next() {
-      Item item = p.item;
-      p = p.next;
+    @Override
+    public T next() {
+      T item = current.item;
+      current = current.next;
       return item;
     }
   }
 
   private int size;
-  private Node<Item> first;
-  private Node<Item> end;
+  private Node<T> first;
+  private Node<T> end;
 
-  public LinkedListDeque(Item item) {
-    first = new Node<Item>(item);
+  public LinkedListDeque(T item) {
+    first = new Node<>(item);
     end = first;
     size = 1;
   }
+
   public LinkedListDeque() {
     first = null;
-    end = first;
+    end = null;
     size = 0;
   }
+
   @Override
-  public void addFirst(Item item) {
-    Node<Item> temp = new Node<>(item);
-    if (first == null) {
-      first = temp;
-      end = temp;
+  public void addFirst(T item) {
+    Node<T> newNode = new Node<>(item);
+    if (isEmpty()) {
+      first = newNode;
+      end = newNode;
     } else {
-      temp.next = first;
-      first.prev = temp;
-      first = temp;
+      newNode.next = first;
+      first.prev = newNode;
+      first = newNode;
     }
     size++;
-
   }
+
   @Override
-  public void addLast(Item item) {
-    if (end == null) {
-      first = new Node<>(item);
-      end = first;
+  public void addLast(T item) {
+    Node<T> newNode = new Node<>(item);
+    if (isEmpty()) {
+      first = newNode;
+      end = newNode;
     } else {
-      end = new Node<>(item, end);
+      end.next = newNode;
+      newNode.prev = end;
+      end = newNode;
     }
     size++;
-
   }
+
   @Override
   public int size() {
     return size;
   }
+
+  public boolean isEmpty() {
+    return size == 0;
+  }
+
   @Override
   public void printDeque() {
-    Node<Item> temp = first;
+    Node<T> temp = first;
     while (temp != null) {
       System.out.print(temp.item + " ");
       temp = temp.next;
     }
     System.out.println();
   }
+
   @Override
-  public Item removeFirst() {
+  public T removeFirst() {
     if (isEmpty()) {
       return null;
-    } else {
-      Node<Item> temp = first;
-      first = first.next;
-      size--;
-      return temp.item;
     }
+    T item = first.item;
+    first = first.next;
+    if (first != null) {
+      first.prev = null;
+    } else {
+      end = null; // List is empty now
+    }
+    size--;
+    return item;
   }
+
   @Override
-  public Item removeLast() {
+  public T removeLast() {
     if (isEmpty()) {
       return null;
-    } else {
-      Node<Item> temp = end;
-      end = end.prev;
-      size--;
-      return temp.item;
     }
+    T item = end.item;
+    end = end.prev;
+    if (end != null) {
+      end.next = null;
+    } else {
+      first = null; // List is empty now
+    }
+    size--;
+    return item;
   }
+
   @Override
-  public Item get(int index) {
-    if (index > size - 1 || index < 0) {
+  public T get(int index) {
+    if (index < 0 || index >= size) {
       return null;
     }
-    Node<Item> temp = first;
+    Node<T> temp = first;
     for (int i = 0; i < index; i++) {
       temp = temp.next;
     }
     return temp.item;
   }
-  public Item getRecursive(int index) {
-    if (index > size - 1 ) {
+
+  public T getRecursive(int index) {
+    if (index < 0 || index >= size) {
       return null;
     }
-    return recursive(first, index);
+    return getRecursiveHelper(first, index);
   }
-  private Item recursive(Node<Item> temp, int index) {
+
+  private T getRecursiveHelper(Node<T> node, int index) {
     if (index == 0) {
-      return temp.item;
+      return node.item;
     }
-    return recursive(temp.next, index - 1);
+    return getRecursiveHelper(node.next, index - 1);
   }
-  public Iterator<Item> iterator() {
+
+
+  public Iterator<T> iterator() {
     return new LinkedListDequeIterator();
   }
-
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    }
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof LinkedListDeque)) {
+      return false;
+    }
+    LinkedListDeque<?> lld = (LinkedListDeque<?>) o;
+    if (lld.size() != size) {
+      return false;
+    }
+    for (int i = 0; i < size; i++) {
+      if (lld.get(i) != get(i)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   public static void main(String[] args) {
-    LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+    LinkedListDeque<Integer> lld1 = new LinkedListDeque<>();
     for (int i = 0; i < 10; i++) {
       lld1.addLast(i);
     }
