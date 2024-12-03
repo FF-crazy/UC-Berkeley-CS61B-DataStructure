@@ -75,6 +75,18 @@ public class AList<type> implements List<type>, Iterable<type> {
   }
 
   @Override
+  public String toString() {
+    StringBuilder stringBuilder = new StringBuilder("{");
+    for (int i = 0; i < size - 1; i++) {
+      stringBuilder.append(items[i].toString());
+      stringBuilder.append(", ");
+    }
+    stringBuilder.append(items[size - 1].toString());
+    stringBuilder.append("}");
+    return stringBuilder.toString();
+  }
+
+  @Override
   public void deleteElement(type item) {
     int i = 0;
     while (items[i] != item) {

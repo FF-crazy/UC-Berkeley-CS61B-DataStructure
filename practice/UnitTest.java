@@ -22,7 +22,9 @@ public class UnitTest {
     System.out.println(list.checkByPosition(2));
     System.out.println(list.checkByElement(1));
     for (Integer i : list) {
-      System.out.println(i);
+      System.out.print(i);
     }
+    System.out.println();
+    System.out.println(list);
   }
 }
