@@ -148,6 +148,18 @@ public class AList<type> implements List<type>, Iterable<type> {
     }
 
   }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o instanceof AList<?> aList) {
+      if (this.size != ((AList<?>) o).size) return false;
+      for (int i = 0; i < size; i++) {
+        if (items[i] != ((AList<?>) o).items[i]) return false;
+      }
+      return true;
+    }
+    return false;
+  }
 }
 
 
