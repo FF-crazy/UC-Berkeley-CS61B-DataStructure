@@ -1,4 +1,6 @@
-public class AList<type> implements List<type> {
+import java.util.Iterator;
+
+public class AList<type> implements List<type>, Iterable<type> {
 
   private type[] items;
   private int size;
@@ -111,6 +113,29 @@ public class AList<type> implements List<type> {
     return i;
   }
 
+  public Iterator<type> iterator() {
+    return new AListIterator();
+  }
+
+  private class AListIterator implements Iterator<type> {
+
+    public int position;
+
+    public AListIterator() {
+      position = 0;
+    }
+
+    public boolean hasNext() {
+      return position < size;
+    }
+
+    public type next() {
+      type temp = items[position];
+      position++;
+      return temp;
+    }
+
+  }
 }
 
 
