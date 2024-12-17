@@ -86,6 +86,15 @@ public class AList<type> implements List<type>, Iterable<type> {
     return stringBuilder.toString();
   }
 
+  public String ToString_2() {
+    List<String> stringList = new AList<>();
+    for (type x : this) {
+      stringList.insert(x.toString());
+    }
+    return "{" + String.join(", ", (AList)stringList) + "}";
+
+  }
+
   @Override
   public void deleteElement(type item) {
     int i = 0;
@@ -148,18 +157,28 @@ public class AList<type> implements List<type>, Iterable<type> {
     }
 
   }
+
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
+    if (this == o) {
+      return true;
+    }
     if (o instanceof AList<?> aList) {
-      if (this.size != ((AList<?>) o).size) return false;
+      if (this.size != ((AList<?>) o).size) {
+        return false;
+      }
       for (int i = 0; i < size; i++) {
-        if (items[i] != ((AList<?>) o).items[i]) return false;
+        if (items[i] != ((AList<?>) o).items[i]) {
+          return false;
+        }
       }
       return true;
     }
     return false;
   }
+
+
+
 }
 
 
