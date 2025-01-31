@@ -9,22 +9,36 @@ public class UnitTest {
 //    Assert.assertArrayEquals(input, expect);
 //  }
 
+//  @Test
+//  public void AListTest() {
+//    AList<Integer> list = new AList<Integer>();
+//    list.append(1);
+//    list.insert(0);
+//    list.insert(2, 1);
+//    list.insert(100, 2);
+//    list.printList();
+//    list.deleteElement(100);
+//    list.printList();
+//    System.out.println(list.checkByPosition(2));
+//    System.out.println(list.checkByElement(1));
+//    for (Integer i : list) {
+//      System.out.print(i);
+//    }
+//    System.out.println();
+//    System.out.println(list);
+//  }
   @Test
-  public void AListTest() {
-    AList<Integer> list = new AList<Integer>();
-    list.append(1);
-    list.insert(0);
-    list.insert(2, 1);
-    list.insert(100, 2);
-    list.printList();
-    list.deleteElement(100);
-    list.printList();
-    System.out.println(list.checkByPosition(2));
-    System.out.println(list.checkByElement(1));
-    for (Integer i : list) {
-      System.out.print(i);
-    }
-    System.out.println();
-    System.out.println(list);
+  public void DisjointSetTest() {
+    DisjointSet disjointSet = new DisjointSet(7);
+    System.out.println(disjointSet.isConnected(1, 5));
+    disjointSet.connect(1, 2);
+    disjointSet.connect(2, 3);
+    disjointSet.connect(1, 4);
+    disjointSet.connect(5, 6);
+    System.out.println(disjointSet.isConnected(1, 5));
+    System.out.println(disjointSet.isConnected(1, 4));
+    disjointSet.connect(3, 6);
+    System.out.println(disjointSet.isConnected(1, 6));
+
   }
 }
