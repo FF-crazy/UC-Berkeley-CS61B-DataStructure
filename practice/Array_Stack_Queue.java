@@ -21,7 +21,7 @@ public class Array_Stack_Queue {
     public void push(int i) {
       if (top == size - 1) {
         System.out.println("Full!");
-        return;
+        throw new EmptyStackException();
       }
       array[++top] = i;
     }

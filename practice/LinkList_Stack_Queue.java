@@ -36,6 +36,7 @@ public class LinkList_Stack_Queue {
       StaffNode temp = new StaffNode(i);
       temp.next = sential.next;
       sential.next = temp;
+      size++;
     }
 
     public int pop() {
@@ -45,6 +46,7 @@ public class LinkList_Stack_Queue {
       }
       int temp = sential.next.item;
       sential.next = sential.next.next;
+      size--;
       return temp;
     }
   }
