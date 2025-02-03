@@ -51,4 +51,37 @@ public class LinkList_Stack_Queue {
     }
   }
 
+  public class LinkListQueue {
+
+    private StaffNode front;
+    private StaffNode rear;
+    private int size;
+
+    public LinkListQueue() {
+      front = new StaffNode();
+      rear = front;
+      size = 0;
+    }
+
+    public boolean empty() {
+      return size == 0;
+    }
+
+    public void push(int i) {
+      rear.next = new StaffNode(i);
+      rear = rear.next;
+      size++;
+    }
+
+    public int pop() {
+      if (this.empty()) {
+        System.out.println("Empty");
+        throw new RuntimeException();
+      }
+      front = front.next;
+      size--;
+      return front.item;
+    }
+
+  }
 }
