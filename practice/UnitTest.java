@@ -43,7 +43,7 @@ public class UnitTest {
 //
 //  }
   @Test
-  public void LinkListDequeTest() {
+  public void LinkListQueueTest() {
     LinkList_Stack_Queue outer = new LinkList_Stack_Queue();
     LinkList_Stack_Queue.LinkListQueue linkListQueue = outer.new LinkListQueue();
     linkListQueue.push(1);
@@ -58,6 +58,28 @@ public class UnitTest {
     System.out.println(linkListQueue.pop());
     System.out.println(linkListQueue.pop());
     System.out.println(linkListQueue.pop());
+    System.out.println(linkListQueue.empty());
+  }
+
+  @Test
+  public void DequeTest() {
+    LinkList_Stack_Queue outer = new LinkList_Stack_Queue();
+    LinkList_Stack_Queue.Deque deque = outer.new Deque();
+    deque.frontPush(3);
+    deque.frontPush(2);
+    deque.frontPush(1);
+    deque.rearPush(2);
+    deque.rearPush(3);
+    deque.printList();
+    deque.frontPop();
+    deque.rearPop();
+    deque.printList();
+    deque.frontPop();
+    deque.rearPop();
+    deque.frontPush(99);
+    deque.rearPop();
+    deque.frontPop();
+
   }
 }
 

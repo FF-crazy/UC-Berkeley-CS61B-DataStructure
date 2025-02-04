@@ -53,9 +53,9 @@ public class LinkList_Stack_Queue {
 
   public class LinkListQueue {
 
-    private StaffNode front;
-    private StaffNode rear;
-    private int size;
+    protected StaffNode front;
+    protected StaffNode rear;
+    protected int size;
 
     public LinkListQueue() {
       front = new StaffNode();
@@ -83,5 +83,57 @@ public class LinkList_Stack_Queue {
       return front.item;
     }
 
+  }
+
+  public class Deque extends LinkListQueue{
+
+
+
+    public Deque() {
+     super();
+    }
+
+    public void frontPush(int x) {
+      StaffNode temp = new StaffNode(x);
+      temp.next = front.next;
+      front.next = temp;
+      size++;
+      if (size == 1) {
+        rear = rear.next;
+      }
+    }
+
+    public void rearPush(int x) {
+      super.push(x);
+    }
+
+    public int frontPop() {
+      return super.pop();
+    }
+
+    public int rearPop() {
+      if (this.empty()) {
+        System.out.println("Empty");
+        throw new RuntimeException();
+      }
+      StaffNode temp = front;
+      while (temp.next != rear) {
+        temp = temp.next;
+      }
+      int x = rear.item;
+      rear = temp;
+      rear.next = null;
+      size--;
+      return x;
+    }
+
+    public void printList() {
+      StaffNode temp = front.next;
+      while (temp != null) {
+        System.out.print(temp.item + " -> ");
+        temp = temp.next;
+      }
+      System.out.println();
+    }
   }
 }
