@@ -67,4 +67,45 @@ public class Array_Stack_Queue {
       return array[front++];
     }
   }
+  public class CircularQueue {
+    private int[] array;
+    private int front;
+    private int rear;
+
+    public CircularQueue(int maxsize) {
+      array = new int[maxsize];
+      front = 0;
+      rear = 0;
+    }
+
+    public boolean empty() {
+      return rear == front;
+    }
+
+    public boolean full() {
+      return (rear + 1) % array.length == front;
+    }
+
+    public int size() {
+      return (rear - front + array.length) % array.length;
+    }
+
+    public void push(int x) {
+      if (this.full()) {
+        System.out.println("Full");
+        throw new RuntimeException();
+      }
+      rear = (rear + 1) % array.length;
+      array[rear] = x;
+    }
+
+    public int pop() {
+      if (this.empty()) {
+        System.out.println("Empty");
+        throw new RuntimeException();
+      }
+      front = (front + 1) % array.length;
+      return array[front];
+    }
+  }
 }

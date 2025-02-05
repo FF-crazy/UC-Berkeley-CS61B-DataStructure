@@ -81,6 +81,20 @@ public class UnitTest {
     deque.frontPop();
 
   }
+
+  @Test
+  public void CQueueTest() {
+    Array_Stack_Queue outer = new Array_Stack_Queue();
+    Array_Stack_Queue.CircularQueue circularQueue = outer.new CircularQueue(4);
+    circularQueue.push(1);
+    circularQueue.push(2);
+    circularQueue.push(3);
+    System.out.println(circularQueue.full());
+    System.out.println(circularQueue.pop());
+    System.out.println(circularQueue.pop());
+    System.out.println(circularQueue.pop());
+    System.out.println(circularQueue.empty());
+  }
 }
 
 
