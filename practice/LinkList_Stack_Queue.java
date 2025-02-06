@@ -2,7 +2,7 @@ import java.util.EmptyStackException;
 
 public class LinkList_Stack_Queue {
 
-  public class StaffNode {
+  private class StaffNode {
 
     public StaffNode next;
     public int item;
@@ -20,11 +20,11 @@ public class LinkList_Stack_Queue {
 
   public class LinkListStack {
 
-    private StaffNode sential;
+    private StaffNode sentinel;
     private int size;
 
     public LinkListStack() {
-      sential = new StaffNode();
+      sentinel = new StaffNode();
       size = 0;
     }
 
@@ -34,8 +34,8 @@ public class LinkList_Stack_Queue {
 
     public void push(int i) {
       StaffNode temp = new StaffNode(i);
-      temp.next = sential.next;
-      sential.next = temp;
+      temp.next = sentinel.next;
+      sentinel.next = temp;
       size++;
     }
 
@@ -44,8 +44,8 @@ public class LinkList_Stack_Queue {
         System.out.println("Empty!");
         throw new EmptyStackException();
       }
-      int temp = sential.next.item;
-      sential.next = sential.next.next;
+      int temp = sentinel.next.item;
+      sentinel.next = sentinel.next.next;
       size--;
       return temp;
     }
