@@ -1,30 +1,30 @@
 import java.util.EmptyStackException;
 
-public class LinkList_Stack_Queue {
+public class LinkList_Stack_Queue<T> {
 
-  private class StaffNode {
+  private class StaffNode<T> {
 
-    public StaffNode next;
-    public int item;
+    public StaffNode<T> next;
+    public T item;
 
     public StaffNode() {
       next = null;
-      item = -1;
+      item = null;
     }
 
-    public StaffNode(int i) {
+    public StaffNode(T i) {
       next = null;
       item = i;
     }
   }
 
-  public class LinkListStack {
+  public class LinkListStack<T> {
 
-    private StaffNode sentinel;
+    private StaffNode<T> sentinel;
     private int size;
 
     public LinkListStack() {
-      sentinel = new StaffNode();
+      sentinel = new StaffNode<>();
       size = 0;
     }
 
@@ -32,33 +32,33 @@ public class LinkList_Stack_Queue {
       return size == 0;
     }
 
-    public void push(int i) {
-      StaffNode temp = new StaffNode(i);
+    public void push(T i) {
+      StaffNode<T> temp = new StaffNode<>(i);
       temp.next = sentinel.next;
       sentinel.next = temp;
       size++;
     }
 
-    public int pop() {
+    public T pop() {
       if (this.empty()) {
         System.out.println("Empty!");
         throw new EmptyStackException();
       }
-      int temp = sentinel.next.item;
+      T temp = sentinel.next.item;
       sentinel.next = sentinel.next.next;
       size--;
       return temp;
     }
   }
 
-  public class LinkListQueue {
+  public class LinkListQueue<T> {
 
-    protected StaffNode front;
-    protected StaffNode rear;
+    protected StaffNode<T> front;
+    protected StaffNode<T> rear;
     protected int size;
 
     public LinkListQueue() {
-      front = new StaffNode();
+      front = new StaffNode<>();
       rear = front;
       size = 0;
     }
@@ -67,13 +67,13 @@ public class LinkList_Stack_Queue {
       return size == 0;
     }
 
-    public void push(int i) {
-      rear.next = new StaffNode(i);
+    public void push(T i) {
+      rear.next = new StaffNode<>(i);
       rear = rear.next;
       size++;
     }
 
-    public int pop() {
+    public T pop() {
       if (this.empty()) {
         System.out.println("Empty");
         throw new RuntimeException();
@@ -85,16 +85,15 @@ public class LinkList_Stack_Queue {
 
   }
 
-  public class Deque extends LinkListQueue{
-
+  public class Deque extends LinkListQueue<T> {
 
 
     public Deque() {
-     super();
+      super();
     }
 
-    public void frontPush(int x) {
-      StaffNode temp = new StaffNode(x);
+    public void frontPush(T x) {
+      StaffNode<T> temp = new StaffNode<>(x);
       temp.next = front.next;
       front.next = temp;
       size++;
@@ -103,24 +102,24 @@ public class LinkList_Stack_Queue {
       }
     }
 
-    public void rearPush(int x) {
+    public void rearPush(T x) {
       super.push(x);
     }
 
-    public int frontPop() {
+    public T frontPop() {
       return super.pop();
     }
 
-    public int rearPop() {
+    public T rearPop() {
       if (this.empty()) {
         System.out.println("Empty");
         throw new RuntimeException();
       }
-      StaffNode temp = front;
+      StaffNode<T> temp = front;
       while (temp.next != rear) {
         temp = temp.next;
       }
-      int x = rear.item;
+      T x = rear.item;
       rear = temp;
       rear.next = null;
       size--;
@@ -128,7 +127,7 @@ public class LinkList_Stack_Queue {
     }
 
     public void printList() {
-      StaffNode temp = front.next;
+      StaffNode<T> temp = front.next;
       while (temp != null) {
         System.out.print(temp.item + " -> ");
         temp = temp.next;

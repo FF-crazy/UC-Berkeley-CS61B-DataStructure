@@ -78,4 +78,58 @@ public class BinarySearchTree<type extends Comparable<type>> {
     preOrder(node.left);
     preOrder(node.right);
   }
+
+  public void levelOrder() {
+    LinkList_Stack_Queue<StaffNode<type>> outer = new LinkList_Stack_Queue<>();
+    LinkList_Stack_Queue<StaffNode<type>>.LinkListQueue<StaffNode<type>> queue = outer.new LinkListQueue<StaffNode<type>>();
+    if (root == null) {
+      return;
+    }
+    queue.push(root);
+    while (!queue.empty()) {
+      StaffNode<type> node = queue.pop();
+      System.out.print(node.key + " -> ");
+      if (node.left != null) {
+        queue.push(node.left);
+      }
+      if (node.right != null) {
+        queue.push(node.right);
+      }
+    }
+    System.out.println();
+  }
+
+  public void remove(type k) {
+    root = remove(root, k);
+  }
+
+  private StaffNode<type> remove(StaffNode<type> node, type k) {
+    if (node == null) {
+      return null;
+    } else if (k.compareTo(node.key) > 0) {
+      node.right = remove(node.right, k);
+    } else if (k.compareTo(node.key) < 0) {
+      node.left = remove(node.left, k);
+    } else { // means it finds the object
+      if (node.left == null) {
+        return node.right;
+      } else if (node.right == null) {
+        return node.left;
+      } else {
+        StaffNode<type> next = findMin(node.right);
+        node.key = next.key;
+        node.right = remove(node.right, next.key);
+//        this also works, but not recommend
+//        type temp = next.key; this also works, but not recommend
+//        remove(temp);
+//        node.key = temp;
+      }
+    }
+    return node;
+  }
+
+  private StaffNode<type> findMin(StaffNode<type> node) {
+    while (node.left != null) node = node.left;
+    return node;
+  }
 }

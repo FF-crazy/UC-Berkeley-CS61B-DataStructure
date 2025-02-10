@@ -105,7 +105,10 @@ public class UnitTest {
     tree.addNode(8);
     tree.addNode(4);
     tree.inOrder();
-    tree.preOrder();
+    tree.remove(6);
+    tree.remove(3);
+    tree.remove(8);
+    tree.inOrder();
   }
 }
 
