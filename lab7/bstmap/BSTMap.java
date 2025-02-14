@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.*;
 
-public class BSTMap<K extends Comparable<K>, V extends Comparable<V>> implements Map61B<K, V> {
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
   private class BSTNode<K, V> {
     public K key;
     public V value;
@@ -175,7 +175,7 @@ public class BSTMap<K extends Comparable<K>, V extends Comparable<V>> implements
 
 
 
-  public void inOrder() {
+  public void printInOrder() {
     inOrder(root);
     System.out.println();
   }
@@ -189,7 +189,7 @@ public class BSTMap<K extends Comparable<K>, V extends Comparable<V>> implements
     inOrder(node.right);
   }
 
-  public BSTMapIterator iterator() {
+  public Iterator<K> iterator() {
     return new BSTMapIterator();
   }
 
