@@ -2,7 +2,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Graph {
-  private class Node {
+
+  private class Node implements Comparable<Node>{
+
     private int distance;
     private int number;
 
@@ -10,9 +12,14 @@ public class Graph {
       number = i;
       distance = -1;
     }
+
     public Node(int i, int distance) {
       number = i;
       this.distance = distance;
+    }
+
+    public int compareTo(Node node) {
+      return Integer.compare(this.distance, node.distance);
     }
   }
 
@@ -126,7 +133,9 @@ public class Graph {
       }
     }
   }
+
   public class Dijkstra {
+
 
   }
 }

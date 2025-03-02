@@ -32,6 +32,23 @@ public class Heap<T extends Comparable<T>> {
     return res;
   }
 
+  public void changePriority(T prev, T now) {
+    int location = -1;
+    for (int i = 1; i <= size; i++) {
+      if (items[i].equals(prev)) {
+        location = i;
+        break;
+      }
+    }
+    if (location == -1) {
+      throw new RuntimeException("No element found!");
+    }
+    items[location] = now;
+    swim(location);
+    sink(location);
+
+  }
+
   private int parent(int x) {
     return x / 2;
   }
