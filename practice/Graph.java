@@ -2,26 +2,38 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Graph {
+  private class Node {
+    private int distance;
+    private int number;
 
-  private LinkedList<Integer>[] list;
+    public Node(int i) {
+      number = i;
+      distance = -1;
+    }
+    public Node(int i, int distance) {
+      number = i;
+      this.distance = distance;
+    }
+  }
+
+  private LinkedList<Node>[] list;
 
   public Graph(int v) {
-    list = (LinkedList<Integer>[]) new LinkedList[v];
+    list = (LinkedList<Node>[]) new LinkedList[v];
     for (int i = 0; i < v; i++) {
       list[i] = new LinkedList<>();
     }
   }
 
-  public void addEdge(int v, int w) {
+  public void addEdge(int v, int w, int distance) {
     if (v >= list.length || w >= list.length) {
       throw new ArrayIndexOutOfBoundsException();
     }
-    list[v].add(w);
-    list[w].add(v);
+    list[v].add(new Node(w, distance));
 
   }
 
-  public Iterator<Integer> iterator(int v) {
+  public Iterator<Node> iterator(int v) {
     return list[v].iterator();
   }
 
@@ -40,9 +52,6 @@ public class Graph {
     protected int begin;
 
     public DepthFirstSearch(int v) {
-      if (v >= list.length) {
-        throw new ArrayIndexOutOfBoundsException();
-      }
       begin = v;
       marked = new boolean[list.length];
       edgeTo = new int[list.length];
@@ -55,10 +64,10 @@ public class Graph {
 
     private void dfs(int v) {
       marked[v] = true;
-      for (int i : list[v]) {
-        if (!marked[i]) {
-          edgeTo[i] = v;
-          dfs(i);
+      for (Node i : list[v]) {
+        if (!marked[i.number]) {
+          edgeTo[i.number] = v;
+          dfs(i.number);
         }
       }
     }
@@ -107,15 +116,18 @@ public class Graph {
       queue.addFirst(v);
       while (!queue.isEmpty()) {
         int dequeue = queue.removeFirst();
-        for (int i : list[dequeue]) {
-          if (!marked[i]) {
-            marked[i] = true;
-            edgeTo[i] = dequeue;
-            queue.addLast(i);
+        for (Node i : list[dequeue]) {
+          if (!marked[i.number]) {
+            marked[i.number] = true;
+            edgeTo[i.number] = dequeue;
+            queue.addLast(i.number);
           }
         }
       }
     }
+  }
+  public class Dijkstra {
+
   }
 }
 
