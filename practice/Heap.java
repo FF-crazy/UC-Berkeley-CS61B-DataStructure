@@ -8,6 +8,9 @@ public class Heap<T extends Comparable<T>> {
     size = 0;
   }
 
+  public boolean isEmpty() {
+    return size == 0;
+  }
 
   public void add(T i) {
     items[++size] = i;

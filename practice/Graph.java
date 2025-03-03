@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -50,6 +51,10 @@ public class Graph {
 
   public BreadthFirstSearch BFS(int v) {
     return new BreadthFirstSearch(v);
+  }
+
+  public Dijkstra FindShortestPath(int v) {
+    return new Dijkstra(v);
   }
 
   public class DepthFirstSearch {
@@ -135,7 +140,69 @@ public class Graph {
   }
 
   public class Dijkstra {
+    // TODO
+    private int begin;
+    private Heap<Node> pq;
+    private int[] distTo;
+    private int[] edgeTo;
 
+    public Dijkstra(int begin) {
+      if (begin >= list.length) {
+        throw new ArrayIndexOutOfBoundsException();
+      }
+      this.begin = begin;
+      pq = new Heap<>();
+      distTo = new int[list.length];
+      edgeTo = new int[list.length];
+      Arrays.fill(distTo, Integer.MAX_VALUE);
+      findPath(begin);
+    }
+
+    public void findPath(int begin) {
+      distTo[begin] = 0;
+      pq.add(new Node(begin, 0));
+      while (!pq.isEmpty()) {
+        Node current = pq.removeSmallest();
+        for (Node node : list[current.number]) {
+          if (node.distance + distTo[current.number] < distTo[node.number]) {
+            edgeTo[node.number] = current.number;
+            distTo[node.number] = node.distance + distTo[current.distance];
+            pq.add(new Node(node.number, distTo[node.number]));
+          }
+        }
+      }
+    }
+
+    public boolean hasPathTo(int v) {
+      return distTo[v] != Integer.MAX_VALUE;
+    }
+
+    public int distanceTo(int v) {
+      if (!hasPathTo(v)) {
+        System.out.println("No Path Found");
+        return -1;
+      }
+      return distTo[v];
+    }
+
+    public void pathTo(int v) {
+      if (!hasPathTo(v)) {
+        System.out.println("No Path Found");
+        return;
+      }
+      LinkedList<Integer> iterator = new LinkedList<>();
+      int temp = v;
+      while (temp != begin) {
+        iterator.addFirst(temp);
+        temp = edgeTo[temp];
+      }
+      iterator.addFirst(begin);
+      while (!iterator.isEmpty()) {
+        System.out.print(iterator.removeFirst() + " -> ");
+      }
+      System.out.println();
+      System.out.println(distTo[v]);
+    }
 
   }
 }
