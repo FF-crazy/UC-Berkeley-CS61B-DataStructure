@@ -110,6 +110,21 @@ public class UnitTest {
     tree.remove(8);
     tree.inOrder();
   }
+
+  @Test
+  public void TrieTest() {
+    Trie<Integer> trie = new Trie<>();
+    trie.add("hello", -1);
+    System.out.println(trie.hasString("hello"));
+    System.out.println(trie.hasString("heLlo"));
+    System.out.println(trie.getValue("hello"));
+    System.out.println(trie.hasString("hellO"));
+    trie.addRecursive("Hello", 100);
+    System.out.println(trie.hasString("Hello"));
+    System.out.println(trie.getValue("Hello"));
+    trie.add("H", 10);
+    System.out.println(trie.getValue("H"));
+  }
 }
 
 
