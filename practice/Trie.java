@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+
 public class Trie<T> {
   public class Node<T> {
     private MyHashMap<Character, Node<T>> map;
@@ -92,6 +94,37 @@ public class Trie<T> {
 
   public void addRecursive(String s, T v) {
     root.addRecursive(s, root, 0, v);
+  }
+
+  public LinkedList<String> collect() {
+    LinkedList<String> result = new LinkedList<>();
+    for (char c : root.map) {
+      collectHelp(String.valueOf(c), result, root.map.get(c));
+    }
+    return result;
+  }
+
+  public LinkedList<String> keyWithPrefix(String s) {
+    LinkedList<String> result = new LinkedList<>();
+    Node<T> temp = root;
+    for (int i = 0; i < s.length(); i++) {
+      if (!temp.map.containsKey(s.charAt(i))) {
+        System.out.println("No Prefix Found!");
+        return result;
+      }
+      temp = temp.map.get(s.charAt(i));
+    }
+    collectHelp(s, result, temp);
+    return result;
+  }
+
+  private void collectHelp(String s, LinkedList<String> res, Node<T> node) {
+    if (node.isEnd) {
+      res.add(s);
+    }
+    for (char c : node.map) {
+      collectHelp(s + c, res, node.map.get(c));
+    }
   }
 }
 

@@ -124,6 +124,8 @@ public class UnitTest {
     System.out.println(trie.getValue("Hello"));
     trie.add("H", 10);
     System.out.println(trie.getValue("H"));
+    System.out.println(trie.collect());
+    System.out.println(trie.keyWithPrefix("H"));
   }
 }
 
