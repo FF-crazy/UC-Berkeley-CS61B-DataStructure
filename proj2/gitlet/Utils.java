@@ -30,6 +30,12 @@ class Utils {
 
     /** The length of a complete SHA-1 UID as a hexadecimal numeral. */
     static final int UID_LENGTH = 40;
+    static final File CWD = new File(System.getProperty("user.dir"));
+    static final File GITLET_DIR = join(CWD, ".gitlet");
+    static final File STAGING = join(GITLET_DIR, "Staging");
+    static final File COMMITFILE = join(GITLET_DIR, "CommitFile");
+    static final File POINTER = join(GITLET_DIR, "Pointer");
+    static final File BLOB = join(GITLET_DIR, "Blobs");
 
     /* SHA-1 HASH VALUES. */
 
@@ -236,4 +242,14 @@ class Utils {
         System.out.printf(msg, args);
         System.out.println();
     }
+
+    static boolean checkInitExist() {
+      return
+          GITLET_DIR.exists() && STAGING.exists() && COMMITFILE.exists() && POINTER.exists() && BLOB.exists();
+    }
+
+    static void objectToFile(Object o, String path) {
+
+    }
+
 }

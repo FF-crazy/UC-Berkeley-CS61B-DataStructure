@@ -1,5 +1,11 @@
 package gitlet;
 
+import static gitlet.Utils.*;
+import static gitlet.Utils.join;
+
+import java.io.File;
+import java.io.IOException;
+
 /** Driver class for Gitlet, a subset of the Git version-control system.
  *  @author FF_Crazy, ChatGPT.
  */
@@ -8,70 +14,73 @@ public class Main {
     /** Usage: java gitlet.Main ARGS, where ARGS contains
      *  <COMMAND> <OPERAND1> <OPERAND2> ... 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length == 0) {
             System.out.println("Please enter a command.");
             System.exit(0);
         }
+        Repository repository = new Repository();
         String firstArg = args[0];
         switch(firstArg) {
             case "init":
                 // TODO: handle the `init` command
+                repository.init();
                 break;
             case "add":
                 // TODO: handle the `add [filename]` command
-                checkInitExist();
+                checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
                 break;
             // TODO: FILL THE REST IN
             case "commit":
-                checkInitExist();
+                checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
 
                 break;
             case "rm":
-                checkInitExist();
+                checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
 
                 break;
             case "log":
-                checkInitExist();
+                checkInitExist(Utils.checkInitExist());
                 checkLength(1, args);
                 break;
             case "global-log":
-                checkInitExist();
+                checkInitExist(Utils.checkInitExist());
                 checkLength(1, args);
                 break;
             case "find":
-                checkInitExist();
+                checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
 
                 break;
             case "status":
-                checkInitExist();
+                checkInitExist(Utils.checkInitExist());
                 checkLength(1, args);
 
                 break;
             case "checkout":
+                checkInitExist(Utils.checkInitExist());
 
                 break;
             case "branch":
-                checkInitExist();
+                checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
 
                 break;
             case "rm-branch":
-                checkInitExist();
+                checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
 
                 break;
             case "reset":
-                checkInitExist();
+                checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
 
                 break;
             case "merge":
-                checkInitExist();
+                checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
 
                 break;
@@ -87,11 +96,12 @@ public class Main {
             System.exit(0);
         }
     }
-    public static void checkInitExist() {
-        //TODO:
-        if () {
+
+    public static void checkInitExist(boolean bool) {
+        if (!bool) {
             System.out.println("Not in an initialized Gitlet directory.");
             System.exit(0);
         }
     }
+
 }
