@@ -33,7 +33,7 @@ public class Main {
             case "commit":
                 checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
-
+                repository.commit(args[1]);
                 break;
             case "rm":
                 checkInitExist(Utils.checkInitExist());

@@ -20,14 +20,21 @@ public class Staging implements Serializable {
 
     public void add(String name) throws IOException {
         if (delete.containsKey(name)) {
-            delete.remove(name);
+            Blob blob = delete.remove(name);
+            toFile();
         }
-            Blob temp = new Blob(name);
-            store.put(name, temp);
+        if (join(CWD, name).exists()) {
+            Blob blob = new Blob(name);
+            store.put(name, blob);
+            toFile();
+        } else {
+            System.out.println("File does not exist.");
+            System.exit(0);
+        }
 //            File file = join(STAGING, name);
 //            file.createNewFile();
 //            writeObject(file, temp);
-        toFile();
+
     }
 
     public void rm(String name, Commit HEAD) throws IOException {
@@ -36,12 +43,14 @@ public class Staging implements Serializable {
 //            File file = join(STAGING, name);
 //            restrictedDelete(file);
         } else if (HEAD.files.containsKey(name)) {
-            Blob temp = HEAD.files.remove(name);
-            delete.put(name, temp);
+            String temp = HEAD.files.remove(name);
+            File file = join(BLOB, temp);
+            delete.put(name, new Blob(name, file));
+
 //            File toStage = join(STAGING, name);
 //            toStage.createNewFile();
 //            writeObject(toStage, temp);
-            File file = join(CWD, name);
+            file = join(CWD, name);
             restrictedDelete(file);
         } else {
             System.out.println("No reason to remove the file.");
@@ -54,9 +63,13 @@ public class Staging implements Serializable {
         delete.clear();
         toFile();
     }
+    public boolean isEmpty() {
+        return store.isEmpty() && delete.isEmpty();
+    }
 
     public void toFile() throws IOException {
         objectToFile(this, STAGING, "staging", false);
     }
+
 
 }

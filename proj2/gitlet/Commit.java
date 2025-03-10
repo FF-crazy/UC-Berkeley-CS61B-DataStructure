@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Set;
 
 /** Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
@@ -28,16 +29,21 @@ public class Commit implements Serializable {
     public String parent0;
     public String parent1;
     public String commitID;
-    public HashMap<String, Blob> files;
+    public HashMap<String, String> files;
 
     /* TODO: fill in the rest of this class. */
     // using for usual commit
-    public Commit(String message, String parent0, Staging stage) {
+    public Commit(String message, Commit parent, Staging stage) throws IOException {
         this.message = message;
-        this.parent0 = parent0;
+        this.parent0 = parent.commitID;
         this.parent1 = null;
         timestamp = getTime();
-        files = stage.store;
+        files = parent.files;
+        Set<String> set = stage.store.keySet();
+        for (String s : set) {
+            files.put(s, stage.store.get(s).name);
+            stage.store.get(s).toFile();
+        }
         commitID = sha1(this.toString());
     }
     // using for merge
@@ -64,6 +70,9 @@ public class Commit implements Serializable {
         File file = join(COMMITFILE, this.commitID);
         file.createNewFile();
         writeObject(file, this);
+    }
+    public String toString() {
+        return message + timestamp + "I love ATRI";
     }
 
 }

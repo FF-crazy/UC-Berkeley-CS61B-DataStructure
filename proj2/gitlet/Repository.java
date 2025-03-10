@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
-import org.checkerframework.checker.units.qual.C;
+//import org.checkerframework.checker.units.qual.C;
 
 import static gitlet.Utils.*;
 
@@ -26,17 +26,16 @@ public class Repository implements Serializable {
      */
     private Staging staging;
     private static Commit HEAD;
-    private Commit branch;
+    private String branch;
     private HashMap<String, Commit> pointers;
 
     public Repository() {
         // Do nothing
     }
     private void constructor() {
-        //TODO: refresh all variables.
         HEAD = readObject(join(POINTER, "HEAD"), Commit.class);
         HEAD = readObject(join(COMMITFILE, HEAD.commitID), Commit.class);
-        branch = readObject(join(POINTER, "branch"), Commit.class);
+        branch = readObject(join(POINTER, "branch"), String.class);
         pointers = (HashMap<String, Commit>) readObject(join(POINTER, "pointers"), HashMap.class);
         staging = readObject(join(STAGING, "staging"), Staging.class);
     }
@@ -62,7 +61,7 @@ public class Repository implements Serializable {
         staging = new Staging();
         pointers = new HashMap<>();
         HEAD = first;
-        branch = first;
+        branch = "master";
         pointers.put("master", first);
         staging.toFile();
         quickStore(first);
@@ -72,10 +71,6 @@ public class Repository implements Serializable {
 
     public void add(String filename) throws IOException {
         File file = join(CWD, filename);
-        if (!file.exists()) {
-            System.out.println("File does not exist.");
-            System.exit(0);
-        }
         constructor();
         staging.add(filename);
     }
@@ -87,9 +82,17 @@ public class Repository implements Serializable {
 
     public void commit(String message) throws IOException {
         constructor();
-        Commit newcommit = new Commit(message, HEAD.commitID, staging);
+        if (staging.isEmpty()) {
+            System.out.println("No changes added to the commit.");
+            System.exit(0);
+        }
+        if (message.isEmpty()) {
+            System.out.println("Please enter a commit message.");
+            System.exit(0);
+        }
+        Commit newcommit = new Commit(message, HEAD, staging);
         HEAD = newcommit;
-        branch = newcommit;
+        pointers.put(branch, HEAD);
         quickStore(newcommit);
         staging.clear();
     }
