@@ -47,8 +47,12 @@ public class Repository implements Serializable {
         COMMITFILE.mkdir();
         POINTER.mkdir();
         BLOB.mkdir();
-
+        LOG.createNewFile();
+        Commit first = new Commit();
+        HEAD = first;
+        pointers.put("master", first);
     }
 
     /* TODO: fill in the rest of this class. */
+
 }

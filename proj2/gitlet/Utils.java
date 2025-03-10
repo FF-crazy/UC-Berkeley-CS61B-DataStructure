@@ -14,9 +14,12 @@ import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
+import java.util.TimeZone;
 
 
 /** Assorted utilities.
@@ -36,6 +39,7 @@ class Utils {
     static final File COMMITFILE = join(GITLET_DIR, "CommitFile");
     static final File POINTER = join(GITLET_DIR, "Pointer");
     static final File BLOB = join(GITLET_DIR, "Blobs");
+    static final File LOG = join(GITLET_DIR, "logs.log");
 
     /* SHA-1 HASH VALUES. */
 
@@ -245,11 +249,27 @@ class Utils {
 
     static boolean checkInitExist() {
       return
-          GITLET_DIR.exists() && STAGING.exists() && COMMITFILE.exists() && POINTER.exists() && BLOB.exists();
+          GITLET_DIR.exists() && STAGING.exists() && COMMITFILE.exists() && POINTER.exists() && BLOB.exists() && LOG.exists();
     }
 
-    static void objectToFile(Object o, String path) {
+    static String getTime() {
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy Z");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT-08:00"));
+        return sdf.format(now);
+    }
 
+    static void writeLog(File logFile, Commit commit) {
+        Log logs = readObject(logFile, Log.class);
+        logs.add("===\n" + "commit " + commit.commitID + "\nData: " + commit.timestamp + "\n" + commit.message + "\n\n");
+        writeContents(logFile, logs);
+    }
+
+    static void objectToFile(Serializable o, String path, String name, boolean needSha1)
+        throws IOException {
+        File file = join(path, name);
+        file.createNewFile();
+        writeObject(file, needSha1 ? sha1(o) : o);
     }
 
 }

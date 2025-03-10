@@ -1,7 +1,11 @@
 package gitlet;
 
+import static gitlet.Utils.*;
+
 // TODO: any imports you need here
 import gitlet.Utils.*;
+import java.io.Serializable;
+import java.util.HashMap;
 import org.checkerframework.checker.units.qual.C;
 
 /** Represents a gitlet commit object.
@@ -10,7 +14,7 @@ import org.checkerframework.checker.units.qual.C;
  *
  *  @author FF_Crazy
  */
-public class Commit {
+public class Commit implements Serializable {
     /**
      * TODO: add instance variables here.
      *
@@ -23,11 +27,23 @@ public class Commit {
     public String timestamp;
     public String message;
     public String parent;
+    public String commitID;
+    public HashMap<String, Blob> files;
 
     /* TODO: fill in the rest of this class. */
-    public Commit(String message, String parent) {
+    public Commit(String message, String parent, Staging stage) {
         this.message = message;
         this.parent = parent;
+        timestamp = getTime();
+        files = stage.files;
+        commitID = sha1(this);
+    }
+    public Commit() {
+        message = "initial commit";
+        parent = null;
+        timestamp = "Wed Dec 31 16:00:00 1969 -0800";
+        files = null;
+        commitID = sha1(this);
     }
 
 }
