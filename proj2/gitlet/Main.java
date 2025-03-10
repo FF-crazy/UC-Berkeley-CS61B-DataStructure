@@ -23,15 +23,13 @@ public class Main {
         String firstArg = args[0];
         switch(firstArg) {
             case "init":
-                // TODO: handle the `init` command
                 repository.init();
                 break;
             case "add":
-                // TODO: handle the `add [filename]` command
                 checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
+                repository.add(args[1]);
                 break;
-            // TODO: FILL THE REST IN
             case "commit":
                 checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
@@ -40,7 +38,7 @@ public class Main {
             case "rm":
                 checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
-
+                repository.rm(args[1]);
                 break;
             case "log":
                 checkInitExist(Utils.checkInitExist());

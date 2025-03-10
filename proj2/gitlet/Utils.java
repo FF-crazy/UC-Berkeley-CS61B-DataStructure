@@ -39,7 +39,6 @@ class Utils {
     static final File COMMITFILE = join(GITLET_DIR, "CommitFile");
     static final File POINTER = join(GITLET_DIR, "Pointer");
     static final File BLOB = join(GITLET_DIR, "Blobs");
-    static final File LOG = join(GITLET_DIR, "logs.log");
 
     /* SHA-1 HASH VALUES. */
 
@@ -249,7 +248,7 @@ class Utils {
 
     static boolean checkInitExist() {
       return
-          GITLET_DIR.exists() && STAGING.exists() && COMMITFILE.exists() && POINTER.exists() && BLOB.exists() && LOG.exists();
+          GITLET_DIR.exists() && STAGING.exists() && COMMITFILE.exists() && POINTER.exists() && BLOB.exists();
     }
 
     static String getTime() {
@@ -259,13 +258,8 @@ class Utils {
         return sdf.format(now);
     }
 
-    static void writeLog(File logFile, Commit commit) {
-        Log logs = readObject(logFile, Log.class);
-        logs.add("===\n" + "commit " + commit.commitID + "\nData: " + commit.timestamp + "\n" + commit.message + "\n\n");
-        writeContents(logFile, logs);
-    }
 
-    static void objectToFile(Serializable o, String path, String name, boolean needSha1)
+    static void objectToFile(Serializable o, File path, String name, boolean needSha1)
         throws IOException {
         File file = join(path, name);
         file.createNewFile();
