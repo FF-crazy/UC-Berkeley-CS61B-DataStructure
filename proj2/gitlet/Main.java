@@ -6,13 +6,16 @@ import static gitlet.Utils.join;
 import java.io.File;
 import java.io.IOException;
 
-/** Driver class for Gitlet, a subset of the Git version-control system.
- *  @author FF_Crazy, ChatGPT.
+/**
+ * Driver class for Gitlet, a subset of the Git version-control system.
+ *
+ * @author FF_Crazy, ChatGPT.
  */
 public class Main {
 
-    /** Usage: java gitlet.Main ARGS, where ARGS contains
-     *  <COMMAND> <OPERAND1> <OPERAND2> ... 
+    /**
+     * Usage: java gitlet.Main ARGS, where ARGS contains
+     * <COMMAND> <OPERAND1> <OPERAND2> ...
      */
     public static void main(String[] args) {
         try {
@@ -63,17 +66,31 @@ public class Main {
                     break;
                 case "checkout":
                     checkInitExist(Utils.checkInitExist());
-
+                    if (args.length == 2) {
+                        repository.checkoutBranch(args[1]);
+                    } else if (args.length == 3) {
+                        if (!args[1].equals("--")) {
+                            checkLength(-1, args);
+                        }
+                        repository.checkoutFile(args[2]);
+                    } else if (args.length == 4){
+                        if (!args[2].equals("--")) {
+                            checkLength(-1, args);
+                        }
+                        repository.checkoutCommit(args[1], args[3]);
+                    } else {
+                        checkLength(-1, args);
+                    }
                     break;
                 case "branch":
                     checkInitExist(Utils.checkInitExist());
                     checkLength(2, args);
-
+                    repository.branch(args[1]);
                     break;
                 case "rm-branch":
                     checkInitExist(Utils.checkInitExist());
                     checkLength(2, args);
-
+                    repository.rmBranch(args[1]);
                     break;
                 case "reset":
                     checkInitExist(Utils.checkInitExist());
@@ -90,9 +107,6 @@ public class Main {
                     repository.init();
                     repository.add("123");
                     repository.commit("123");
-                    repository.add("456");
-                    repository.commit("456");
-                    repository.log();
                     break;
                 default:
                     System.out.println("No command with that name exists.");

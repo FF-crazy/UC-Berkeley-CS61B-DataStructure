@@ -75,7 +75,7 @@ public class Repository implements Serializable {
     public void add(String filename) throws IOException {
         File file = join(CWD, filename);
         constructor();
-        staging.add(filename);
+        staging.add(filename, HEAD);
     }
 
     public void rm(String filename) throws IOException {
@@ -111,7 +111,7 @@ public class Repository implements Serializable {
         }
         System.out.println("===");
         System.out.println("commit " + temp.commitID);
-        System.out.println("Date:" + temp.timestamp);
+        System.out.println("Date: " + temp.timestamp);
         System.out.println(temp.message);
         System.out.println();
     }
@@ -182,7 +182,8 @@ public class Repository implements Serializable {
         List<String> list = plainFilenamesIn(CWD);
         set = new TreeSet<>();
         for (String s : list) {
-            if (!HEAD.files.containsKey(s) && !staging.store.containsKey(s) && !staging.delete.containsKey(s)) {
+            if (!HEAD.files.containsKey(s) && !staging.store.containsKey(s)
+                && !staging.delete.containsKey(s)) {
                 set.add(s);
             }
         }
@@ -191,6 +192,111 @@ public class Repository implements Serializable {
         }
         System.out.println();
     }
+
+    public void branch(String name) throws IOException {
+        constructor();
+        if (pointers.containsKey(name)) {
+            System.out.println("A branch with that name already exists.");
+            System.exit(0);
+        }
+        Commit newcommit = HEAD;
+        pointers.put(name, newcommit);
+        quickStore(HEAD);
+    }
+
+    public void rmBranch(String name) throws IOException {
+        constructor();
+        if (!pointers.containsKey(name)) {
+            System.out.println("A branch with that name does not exist.");
+            System.exit(0);
+        }
+        if (branch.equals(name)) {
+            System.out.println("Cannot remove the current branch.");
+            System.exit(0);
+        }
+        pointers.remove(name);
+        quickStore(HEAD);
+    }
+
+    public void checkoutFile(String name) throws IOException {
+        constructor();
+        checkoutHelper(HEAD, name);
+
+    }
+    public void checkoutCommit(String commitID, String name) throws IOException {
+        constructor();
+        boolean hasFound = false;
+        if (commitID.length() == 6) {
+            List<String> list = plainFilenamesIn(COMMITFILE);
+            for (String s : list) {
+                if (commitID.equals(getSix(0, s, ""))) {
+                    File file = join(COMMITFILE, s);
+                    Commit commit = readObject(file, Commit.class);
+                    checkoutHelper(commit, name);
+                    hasFound = true;
+                    return;
+                }
+            }
+        }
+        List<String> list = plainFilenamesIn(COMMITFILE);
+        for (String s : list) {
+            if (commitID.equals(s)) {
+                File file = join(COMMITFILE, s);
+                Commit commit = readObject(file, Commit.class);
+                checkoutHelper(commit, name);
+                hasFound = true;
+            }
+        }
+        if (!hasFound) {
+            System.out.println("No commit with that id exists.");
+            System.exit(0);
+        }
+    }
+    public void checkoutBranch(String name) throws IOException {
+        constructor();
+        if (!pointers.containsKey(name)) {
+            System.out.println("No such branch exists.");
+            System.exit(0);
+        }
+        if (branch.equals(name)) {
+            System.out.println("No need to checkout the current branch.");
+            System.exit(0);
+        }
+        List<String> list = plainFilenamesIn(CWD);
+        for (String s : list) {
+            if (!HEAD.files.containsKey(s) && !staging.store.containsKey(s)
+                && !staging.delete.containsKey(s)) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.exit(0);
+            }
+        }
+        Commit commit = pointers.get(name);
+        for (String s : list) {
+            File cwdFile = join(CWD, s);
+            if (cwdFile.exists()) {
+                restrictedDelete(cwdFile);
+            }
+            checkoutHelper(commit, s);
+        }
+        branch = name;
+        HEAD = commit;
+        quickStore(HEAD);
+    }
+    private void checkoutHelper(Commit commit, String name) throws IOException {
+        if (!commit.files.containsKey(name)) {
+            System.out.println("File does not exist in that commit.");
+            System.exit(0);
+        }
+        File file = join(BLOB, commit.files.get(name));
+        Blob blob = readObject(file, Blob.class);
+        File cwdFile = join(CWD, name);
+        if (cwdFile.createNewFile()) {
+            restrictedDelete(cwdFile);
+        }
+        cwdFile.createNewFile();
+        writeContents(cwdFile, blob.bytes);
+    }
+
     private String[] stringSort(Set<String> set) {
         ArrayList<String> arr = new ArrayList<>(set);
         Collections.sort(arr);
@@ -233,27 +339,27 @@ public class Repository implements Serializable {
             System.out.println("===");
             System.out.println("commit " + temp.commitID);
             System.out.println(
-                "Merge: " + getString(0, temp.parent0, "") + " " + getString(0, temp.parent1,
+                "Merge: " + getSix(0, temp.parent0, "") + " " + getSix(0, temp.parent1,
                     ""));
-            System.out.println("Date:" + temp.timestamp);
+            System.out.println("Date: " + temp.timestamp);
             System.out.println(temp.message);
             System.out.println();
         } else {
             System.out.println("===");
             System.out.println("commit " + temp.commitID);
-            System.out.println("Date:" + temp.timestamp);
+            System.out.println("Date: " + temp.timestamp);
             System.out.println(temp.message);
             System.out.println();
         }
     }
 
 
-    private String getString(int num, String s, String res) {
-        if (num == 5) {
+    private String getSix(int num, String s, String res) {
+        if (num == 6) {
             return res;
         }
         res += s.charAt(num);
-        return getString(num + 1, s, res);
+        return getSix(num + 1, s, res);
     }
 
     /* TODO: fill in the rest of this class. */

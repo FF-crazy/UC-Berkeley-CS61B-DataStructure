@@ -8,15 +8,18 @@ import java.io.Serializable;
 public class Blob implements Serializable {
     public String name; // hashName
     public File file;
+    public byte[] bytes;
 
     public Blob(String name) {
         file = join(CWD, name);
-        this.name = sha1(file.toString());
+        bytes = readContents(file);
+        this.name = sha1(bytes);
     }
 
     public Blob(String name, File file) {
         this.file = file;
-        this.name = sha1(name);
+        bytes = readContents(file);
+        this.name = sha1(bytes);
     }
 
     public void toFile() throws IOException {

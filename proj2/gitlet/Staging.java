@@ -18,13 +18,16 @@ public class Staging implements Serializable {
         delete = new HashMap<>();
     }
 
-    public void add(String name) throws IOException {
+    public void add(String name, Commit HEAD) throws IOException {
         if (delete.containsKey(name)) {
             Blob blob = delete.remove(name);
             toFile();
         }
         if (join(CWD, name).exists()) {
             Blob blob = new Blob(name);
+            if (blob.name.equals(HEAD.files.get(name))) {
+                return;
+            }
             store.put(name, blob);
             toFile();
         } else {
