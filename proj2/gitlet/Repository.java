@@ -81,6 +81,7 @@ public class Repository implements Serializable {
     public void rm(String filename) throws IOException {
         constructor();
         staging.rm(filename, HEAD);
+        quickStore(HEAD);
     }
 
     public void commit(String message) throws IOException {
