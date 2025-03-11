@@ -43,20 +43,22 @@ public class Main {
             case "log":
                 checkInitExist(Utils.checkInitExist());
                 checkLength(1, args);
+                repository.log();
                 break;
             case "global-log":
                 checkInitExist(Utils.checkInitExist());
                 checkLength(1, args);
+                repository.globalLog();
                 break;
             case "find":
                 checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
-
+                repository.find(args[1]);
                 break;
             case "status":
                 checkInitExist(Utils.checkInitExist());
                 checkLength(1, args);
-
+                repository.status();
                 break;
             case "checkout":
                 checkInitExist(Utils.checkInitExist());
@@ -81,6 +83,15 @@ public class Main {
                 checkInitExist(Utils.checkInitExist());
                 checkLength(2, args);
 
+                break;
+                //TODO:
+            case "test" :
+                repository.init();
+                repository.add("123");
+                repository.commit("123");
+                repository.add("456");
+                repository.commit("456");
+                repository.log();
                 break;
             default:
                 System.out.println("No command with that name exists.");

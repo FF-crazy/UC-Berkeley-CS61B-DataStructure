@@ -45,7 +45,8 @@ public class Staging implements Serializable {
         } else if (HEAD.files.containsKey(name)) {
             String temp = HEAD.files.remove(name);
             File file = join(BLOB, temp);
-            delete.put(name, new Blob(name, file));
+            Blob blob = readObject(file, Blob.class);
+            delete.put(name, blob);
 
 //            File toStage = join(STAGING, name);
 //            toStage.createNewFile();

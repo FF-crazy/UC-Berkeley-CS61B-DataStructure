@@ -11,7 +11,7 @@ public class Blob implements Serializable {
 
     public Blob(String name) {
         file = join(CWD, name);
-        this.name = sha1(this.toString());
+        this.name = sha1(file.toString());
     }
 
     public Blob(String name, File file) {
