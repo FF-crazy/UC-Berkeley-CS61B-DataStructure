@@ -263,15 +263,14 @@ public class Repository implements Serializable {
             System.exit(0);
         }
         List<String> list = plainFilenamesIn(CWD);
+        Commit commit = pointers.get(name);
         for (String s : list) {
-            if (!HEAD.files.containsKey(s) && !staging.store.containsKey(s)
-                && !staging.delete.containsKey(s)) {
+            if (!HEAD.files.containsKey(s) && commit.files.containsKey(s)) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);
             }
         }
-        Commit commit = pointers.get(name);
-        for (String s : list) {
+        for (String s : HEAD.files.keySet()) {
             File cwdFile = join(CWD, s);
             if (cwdFile.exists()) {
                 restrictedDelete(cwdFile);

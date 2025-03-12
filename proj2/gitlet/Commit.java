@@ -38,7 +38,15 @@ public class Commit implements Serializable {
         this.parent0 = parent.commitID;
         this.parent1 = null;
         timestamp = getTime();
-        files = parent.files;
+        files = new HashMap<>();
+        for (String s : parent.files.keySet()) {
+            files.put(s, parent.files.get(s));
+        }
+        for (String s : stage.delete.keySet()) {
+            if (files.containsKey(s)) {
+                files.remove(s);
+            }
+        }
         Set<String> set = stage.store.keySet();
         for (String s : set) {
             files.put(s, stage.store.get(s).name);
