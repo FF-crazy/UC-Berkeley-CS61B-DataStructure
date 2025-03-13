@@ -79,6 +79,8 @@ public class Commit implements Serializable {
         file.createNewFile();
         writeObject(file, this);
     }
+
+    @Override
     public String toString() {
         return message + timestamp + parent0 + "I love ATRI";
     }

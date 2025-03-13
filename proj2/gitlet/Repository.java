@@ -264,6 +264,8 @@ public class Repository implements Serializable {
             if (cwdFile.exists()) {
                 restrictedDelete(cwdFile);
             }
+        }
+        for (String s : commit.files.keySet()) {
             checkoutHelper(commit, s);
         }
         branch = name;
