@@ -95,7 +95,7 @@ public class Main {
                 case "reset":
                     checkInitExist(Utils.checkInitExist());
                     checkLength(2, args);
-
+                    repository.reset(args[1]);
                     break;
                 case "merge":
                     checkInitExist(Utils.checkInitExist());

@@ -291,11 +291,12 @@ public class Repository implements Serializable {
 
     public void reset(String commitID) throws IOException {
         List<String> list = plainFilenamesIn(COMMITFILE);
+        constructor();
         for (String s : list) {
             if (commitID.equals(getString(0, s, "", commitID.length()))) {
                 Commit commit = readObject(join(COMMITFILE, s), Commit.class);
                 for (String cwdFile : plainFilenamesIn(CWD)) {
-                    Blob blob = readObject(join(CWD, cwdFile), Blob.class);
+                    Blob blob = new Blob(cwdFile);
                     if (HEAD.files.containsKey(cwdFile) && !HEAD.files.get(cwdFile).equals(blob.name) && commit.files.containsKey(cwdFile)) {
                         System.out.println("here is an untracked file in the way; delete it, or add and commit it first.");
                         System.exit(0);
