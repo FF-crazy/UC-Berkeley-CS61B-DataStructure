@@ -226,10 +226,9 @@ public class Repository implements Serializable {
     public void checkoutCommit(String commitID, String name) throws IOException {
         constructor();
         boolean hasFound = false;
-        if (commitID.length() == 6) {
             List<String> list = plainFilenamesIn(COMMITFILE);
             for (String s : list) {
-                if (commitID.equals(getSix(0, s, ""))) {
+                if (commitID.equals(getString(0, s, "", commitID.length()))) {
                     File file = join(COMMITFILE, s);
                     Commit commit = readObject(file, Commit.class);
                     checkoutHelper(commit, name);
@@ -237,16 +236,6 @@ public class Repository implements Serializable {
                     return;
                 }
             }
-        }
-        List<String> list = plainFilenamesIn(COMMITFILE);
-        for (String s : list) {
-            if (commitID.equals(s)) {
-                File file = join(COMMITFILE, s);
-                Commit commit = readObject(file, Commit.class);
-                checkoutHelper(commit, name);
-                hasFound = true;
-            }
-        }
         if (!hasFound) {
             System.out.println("No commit with that id exists.");
             System.exit(0);
@@ -280,6 +269,8 @@ public class Repository implements Serializable {
         branch = name;
         HEAD = commit;
         quickStore(HEAD);
+        staging.clear();
+        staging.toFile();
     }
     private void checkoutHelper(Commit commit, String name) throws IOException {
         if (!commit.files.containsKey(name)) {
@@ -338,8 +329,8 @@ public class Repository implements Serializable {
             System.out.println("===");
             System.out.println("commit " + temp.commitID);
             System.out.println(
-                "Merge: " + getSix(0, temp.parent0, "") + " " + getSix(0, temp.parent1,
-                    ""));
+                "Merge: " + getString(0, temp.parent0, "", 6) + " " + getString(0, temp.parent1,
+                    "", 6));
             System.out.println("Date: " + temp.timestamp);
             System.out.println(temp.message);
             System.out.println();
@@ -353,12 +344,12 @@ public class Repository implements Serializable {
     }
 
 
-    private String getSix(int num, String s, String res) {
-        if (num == 6) {
+    private String getString(int num, String s, String res, int max) {
+        if (num == max) {
             return res;
         }
         res += s.charAt(num);
-        return getSix(num + 1, s, res);
+        return getString(num + 1, s, res, max);
     }
 
     /* TODO: fill in the rest of this class. */

@@ -80,7 +80,7 @@ public class Commit implements Serializable {
         writeObject(file, this);
     }
     public String toString() {
-        return message + timestamp + "I love ATRI";
+        return message + timestamp + parent0 + "I love ATRI";
     }
 
 }
