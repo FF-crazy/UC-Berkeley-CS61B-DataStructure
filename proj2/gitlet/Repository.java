@@ -298,7 +298,7 @@ public class Repository implements Serializable {
                 for (String cwdFile : plainFilenamesIn(CWD)) {
                     Blob blob = new Blob(cwdFile);
                     if (HEAD.files.containsKey(cwdFile) && !HEAD.files.get(cwdFile).equals(blob.name) && commit.files.containsKey(cwdFile)) {
-                        System.out.println("here is an untracked file in the way; delete it, or add and commit it first.");
+                        System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                         System.exit(0);
                     }
                 }

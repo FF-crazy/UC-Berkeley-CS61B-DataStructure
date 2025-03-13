@@ -85,7 +85,7 @@ public class Commit implements Serializable {
 
     @Override
     public String toString() {
-        return message + timestamp + parent0 + "I love ATRI";
+        return message + timestamp + parent0 + branchID + parent1 + "I love ATRI";
     }
 
 }
