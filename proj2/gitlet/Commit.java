@@ -30,6 +30,7 @@ public class Commit implements Serializable {
     public String parent1;
     public String commitID;
     public HashMap<String, String> files;
+    public String branchID;
 
     /* TODO: fill in the rest of this class. */
     // using for usual commit
@@ -52,6 +53,7 @@ public class Commit implements Serializable {
             files.put(s, stage.store.get(s).name);
             stage.store.get(s).toFile();
         }
+        branchID = parent.branchID;
         commitID = sha1(this.toString());
     }
     // using for merge
@@ -72,6 +74,7 @@ public class Commit implements Serializable {
         timestamp = "Wed Dec 31 16:00:00 1969 -0800";
         files = new HashMap<>();
         commitID = sha1(this.toString());
+        branchID = "master";
     }
 
     public void toFile() throws IOException {

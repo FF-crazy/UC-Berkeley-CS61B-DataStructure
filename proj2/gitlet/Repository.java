@@ -289,6 +289,36 @@ public class Repository implements Serializable {
         writeContents(cwdFile, blob.bytes);
     }
 
+    public void reset(String commitID) throws IOException {
+        List<String> list = plainFilenamesIn(COMMITFILE);
+        for (String s : list) {
+            if (commitID.equals(getString(0, s, "", commitID.length()))) {
+                Commit commit = readObject(join(COMMITFILE, s), Commit.class);
+                for (String cwdFile : plainFilenamesIn(CWD)) {
+                    Blob blob = readObject(join(CWD, cwdFile), Blob.class);
+                    if (HEAD.files.containsKey(cwdFile) && !HEAD.files.get(cwdFile).equals(blob.name) && commit.files.containsKey(cwdFile)) {
+                        System.out.println("here is an untracked file in the way; delete it, or add and commit it first.");
+                        System.exit(0);
+                    }
+                }
+                for (String cwdFile : HEAD.files.keySet()) {
+                    restrictedDelete(cwdFile);
+                }
+                for (String commitFile : commit.files.keySet()) {
+                    checkoutHelper(commit, commitFile);
+                }
+                HEAD = commit;
+                branch = HEAD.branchID;
+                staging.clear();
+                staging.toFile();
+                quickStore(HEAD);
+                return;
+            }
+        }
+        System.out.println("No commit with that id exists.");
+        System.exit(0);
+    }
+
     private String[] stringSort(Set<String> set) {
         ArrayList<String> arr = new ArrayList<>(set);
         Collections.sort(arr);
@@ -304,23 +334,23 @@ public class Repository implements Serializable {
             Blob cwdBlob = new Blob(s);
             if (HEAD.files.containsKey(s)) {
                 if (!cwdBlob.name.equals(HEAD.files.get(s)) && !staging.store.containsKey(s)) {
-                    set.add(s);
+                    set.add(s + " (modified)");
                 }
             }
             if (staging.store.containsKey(s)) {
                 if (!cwdBlob.name.equals(staging.store.get(s).name)) {
-                    set.add(s);
+                    set.add(s + " (modified)");
                 }
             }
         }
         for (String s : staging.store.keySet()) {
             if (!list.contains(s)) {
-                set.add(s);
+                set.add(s + " (deleted)");
             }
         }
         for (String s : HEAD.files.keySet()) {
             if (!staging.delete.containsKey(s) && !list.contains(s)) {
-                set.add(s);
+                set.add(s + " (deleted)");
             }
         }
         return stringSort(set);
