@@ -1,9 +1,5 @@
 package gitlet;
 
-import static gitlet.Utils.*;
-import static gitlet.Utils.join;
-
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -100,7 +96,7 @@ public class Main {
                 case "merge":
                     checkInitExist(Utils.checkInitExist());
                     checkLength(2, args);
-
+                    repository.merge(args[1]);
                     break;
                 //TODO:
                 case "test":
@@ -112,8 +108,7 @@ public class Main {
                     System.out.println("No command with that name exists.");
                     System.exit(0);
             }
-        } catch (IOException e) {
-
+        } catch (IOException ignored) {
         }
     }
 

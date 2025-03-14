@@ -34,26 +34,16 @@ public class Staging implements Serializable {
             System.out.println("File does not exist.");
             System.exit(0);
         }
-//            File file = join(STAGING, name);
-//            file.createNewFile();
-//            writeObject(file, temp);
-
     }
 
     public void rm(String name, Commit HEAD) throws IOException {
         if (store.containsKey(name)) {
             store.remove(name);
-//            File file = join(STAGING, name);
-//            restrictedDelete(file);
         } else if (HEAD.files.containsKey(name)) {
             String temp = HEAD.files.get(name);
             File file = join(BLOB, temp);
             Blob blob = readObject(file, Blob.class);
             delete.put(name, blob);
-
-//            File toStage = join(STAGING, name);
-//            toStage.createNewFile();
-//            writeObject(toStage, temp);
             file = join(CWD, name);
             restrictedDelete(file);
         } else {

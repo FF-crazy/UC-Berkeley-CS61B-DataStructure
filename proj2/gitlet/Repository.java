@@ -4,15 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
-//import org.checkerframework.checker.units.qual.C;
-
 import static gitlet.Utils.*;
 
-// TODO: any imports you need here
 
 /**
  * Represents a gitlet repository.
- *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
  *
  * @author FF_Crazy
@@ -73,7 +69,6 @@ public class Repository implements Serializable {
 
 
     public void add(String filename) throws IOException {
-        File file = join(CWD, filename);
         constructor();
         staging.add(filename, HEAD);
     }
@@ -296,8 +291,7 @@ public class Repository implements Serializable {
             if (commitID.equals(getString(0, s, "", commitID.length()))) {
                 Commit commit = readObject(join(COMMITFILE, s), Commit.class);
                 for (String cwdFile : plainFilenamesIn(CWD)) {
-                    Blob blob = new Blob(cwdFile);
-                    if (HEAD.files.containsKey(cwdFile) && !HEAD.files.get(cwdFile).equals(blob.name) && commit.files.containsKey(cwdFile)) {
+                    if (!HEAD.files.containsKey(cwdFile) && commit.files.containsKey(cwdFile)) {
                         System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                         System.exit(0);
                     }
@@ -310,6 +304,7 @@ public class Repository implements Serializable {
                 }
                 HEAD = commit;
                 branch = HEAD.branchID;
+                pointers.put(branch, HEAD);
                 staging.clear();
                 staging.toFile();
                 quickStore(HEAD);
@@ -385,6 +380,32 @@ public class Repository implements Serializable {
         return getString(num + 1, s, res, max);
     }
 
-    /* TODO: fill in the rest of this class. */
+    public void merge(String branchName) {
+        constructor();
+        preTest(branchName);
+    }
+
+    private void preTest(String name) {
+        if (!staging.isEmpty()) {
+            System.out.println("You have uncommitted changes.");
+            System.exit(0);
+        }
+        if (!pointers.containsKey(name)) {
+            System.out.println("A branch with that name does not exist.");
+            System.exit(0);
+        }
+        if (name.equals(branch)) {
+            System.out.println("Cannot merge a branch with itself.");
+            System.exit(0);
+        }
+        List<String> list = plainFilenamesIn(CWD);
+        for (String s : list) {
+            if (!HEAD.files.containsKey(s) && pointers.get(name).files.containsKey(s)) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.exit(0);
+            }
+        }
+    }
+
 
 }

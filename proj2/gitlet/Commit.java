@@ -9,18 +9,15 @@ import java.util.HashMap;
 import java.util.Set;
 
 /** Represents a gitlet commit object.
- *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
  *
  *  @author FF_Crazy
  */
 public class Commit implements Serializable {
-    /**
-     * TODO: add instance variables here.
-     *
-     * List all instance variables of the Commit class here with a useful
-     * comment above them describing what that variable represents and how that
-     * variable is used. We've provided one example for `message`.
+    /*
+      List all instance variables of the Commit class here with a useful
+      comment above them describing what that variable represents and how that
+      variable is used. We've provided one example for `message`.
      */
 
     /** The message of this Commit. */
@@ -32,7 +29,6 @@ public class Commit implements Serializable {
     public HashMap<String, String> files;
     public String branchID;
 
-    /* TODO: fill in the rest of this class. */
     // using for usual commit
     public Commit(String message, Commit parent, Staging stage) throws IOException {
         this.message = message;
