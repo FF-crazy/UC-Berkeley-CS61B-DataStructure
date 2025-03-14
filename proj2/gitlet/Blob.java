@@ -1,11 +1,13 @@
 package gitlet;
 
 import static gitlet.Utils.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
 public class Blob implements Serializable {
+
     public String name; // hashName
     public File file;
     public byte[] bytes;

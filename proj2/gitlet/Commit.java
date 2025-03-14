@@ -8,10 +8,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
-/** Represents a gitlet commit object.
- *  does at a high level.
+/**
+ * Represents a gitlet commit object. does at a high level.
  *
- *  @author FF_Crazy
+ * @author FF_Crazy
  */
 public class Commit implements Serializable {
     /*
@@ -20,7 +20,9 @@ public class Commit implements Serializable {
       variable is used. We've provided one example for `message`.
      */
 
-    /** The message of this Commit. */
+    /**
+     * The message of this Commit.
+     */
     public String timestamp;
     public String message;
     public String parent0;
@@ -30,7 +32,7 @@ public class Commit implements Serializable {
     public String branchID;
 
     // using for usual commit
-    public Commit(String message, Commit parent, Staging stage) throws IOException {
+    public Commit(String message, Commit parent, Staging stage, String branch) throws IOException {
         this.message = message;
         this.parent0 = parent.commitID;
         this.parent1 = null;
@@ -49,19 +51,21 @@ public class Commit implements Serializable {
             files.put(s, stage.store.get(s).name);
             stage.store.get(s).toFile();
         }
-        branchID = parent.branchID;
+        branchID = branch;
         commitID = sha1(this.toString());
     }
+
     // using for merge
-    public Commit(String message, String parent0, String parent1) {
-        this.message = message;
-        this.parent0 = parent0;
-        this.parent1 = parent1;
+    public Commit(Commit parent0, Commit parent1, HashMap<String, String> files) {
+        this.message = "Merged " + parent1.branchID + " into " + parent0.branchID + ".";
+        this.parent0 = parent0.commitID;
+        this.parent1 = parent1.commitID;
         timestamp = getTime();
-        // TODO: merge require
-        files = null;
+        this.files = files;
+        branchID = parent0.branchID;
         commitID = sha1(this.toString());
     }
+
     // using for initial
     public Commit() {
         message = "initial commit";

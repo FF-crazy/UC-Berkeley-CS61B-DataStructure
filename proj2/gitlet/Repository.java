@@ -3,13 +3,14 @@ package gitlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+
 import static gitlet.Utils.*;
 
 
 /**
- * Represents a gitlet repository.
- *  does at a high level.
+ * Represents a gitlet repository. does at a high level.
  *
  * @author FF_Crazy
  */
@@ -88,7 +89,7 @@ public class Repository implements Serializable {
             System.out.println("Please enter a commit message.");
             System.exit(0);
         }
-        Commit newcommit = new Commit(message, HEAD, staging);
+        Commit newcommit = new Commit(message, HEAD, staging, branch);
         HEAD = newcommit;
         pointers.put(branch, HEAD);
         quickStore(newcommit);
@@ -196,6 +197,7 @@ public class Repository implements Serializable {
             System.exit(0);
         }
         Commit newcommit = HEAD;
+        newcommit.branchID = name;
         pointers.put(name, newcommit);
         quickStore(HEAD);
     }
@@ -219,24 +221,26 @@ public class Repository implements Serializable {
         checkoutHelper(HEAD, name);
 
     }
+
     public void checkoutCommit(String commitID, String name) throws IOException {
         constructor();
         boolean hasFound = false;
-            List<String> list = plainFilenamesIn(COMMITFILE);
-            for (String s : list) {
-                if (commitID.equals(getString(0, s, "", commitID.length()))) {
-                    File file = join(COMMITFILE, s);
-                    Commit commit = readObject(file, Commit.class);
-                    checkoutHelper(commit, name);
-                    hasFound = true;
-                    return;
-                }
+        List<String> list = plainFilenamesIn(COMMITFILE);
+        for (String s : list) {
+            if (commitID.equals(getString(0, s, "", commitID.length()))) {
+                File file = join(COMMITFILE, s);
+                Commit commit = readObject(file, Commit.class);
+                checkoutHelper(commit, name);
+                hasFound = true;
+                return;
             }
+        }
         if (!hasFound) {
             System.out.println("No commit with that id exists.");
             System.exit(0);
         }
     }
+
     public void checkoutBranch(String name) throws IOException {
         constructor();
         if (!pointers.containsKey(name)) {
@@ -251,7 +255,8 @@ public class Repository implements Serializable {
         Commit commit = pointers.get(name);
         for (String s : list) {
             if (!HEAD.files.containsKey(s) && commit.files.containsKey(s)) {
-                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.out.println(
+                    "There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);
             }
         }
@@ -270,6 +275,7 @@ public class Repository implements Serializable {
         staging.clear();
         staging.toFile();
     }
+
     private void checkoutHelper(Commit commit, String name) throws IOException {
         if (!commit.files.containsKey(name)) {
             System.out.println("File does not exist in that commit.");
@@ -293,7 +299,8 @@ public class Repository implements Serializable {
                 Commit commit = readObject(join(COMMITFILE, s), Commit.class);
                 for (String cwdFile : plainFilenamesIn(CWD)) {
                     if (!HEAD.files.containsKey(cwdFile) && commit.files.containsKey(cwdFile)) {
-                        System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                        System.out.println(
+                            "There is an untracked file in the way; delete it, or add and commit it first.");
                         System.exit(0);
                     }
                 }
@@ -358,8 +365,8 @@ public class Repository implements Serializable {
             System.out.println("===");
             System.out.println("commit " + temp.commitID);
             System.out.println(
-                "Merge: " + getString(0, temp.parent0, "", 6) + " " + getString(0, temp.parent1,
-                    "", 6));
+                "Merge: " + getString(0, temp.parent0, "", 7) + " " + getString(0, temp.parent1,
+                    "", 7));
             System.out.println("Date: " + temp.timestamp);
             System.out.println(temp.message);
             System.out.println();
@@ -384,9 +391,82 @@ public class Repository implements Serializable {
     public void merge(String branchName) throws IOException {
         constructor();
         preTest(branchName);
-        Commit merged = pointers.get(branchName);
-        Commit split = findSplit(merged);
-        inTest(merged, split);
+        Commit other = pointers.get(branchName);
+        Commit split = findSplit(other);
+        inTest(other, split);
+        Set<String> fileset = new TreeSet<>();
+        boolean flag = false;
+        for (String s : HEAD.files.keySet()) {
+            fileset.add(s);
+        }
+        for (String s : other.files.keySet()) {
+            fileset.add(s);
+        }
+        for (String s : split.files.keySet()) {
+            fileset.add(s);
+        }
+        HashMap<String, String> result = new HashMap<>();
+        for (String s : fileset) {
+            if (HEAD.files.containsKey(s) && other.files.containsKey(s) && split.files.containsKey(s)) {
+                if (HEAD.files.get(s).equals(other.files.get(s)) && other.files.get(s).equals(split.files.get(s))) {
+                    result.put(s, HEAD.files.get(s));
+                    continue; // if h, o, s equal, then select anyone.
+                }
+                if (HEAD.files.get(s).equals(split.files.get(s)) && !HEAD.files.get(s).equals(other.files.get(s))) {
+                    result.put(s, other.files.get(s));
+                    continue; // if h == s, but o != h, m is new, select o.
+                }
+                if (other.files.get(s).equals(split.files.get(s)) && !other.files.get(s).equals(HEAD.files.get(s))) {
+                    result.put(s, HEAD.files.get(s));
+                    continue; // if o == s, but h != o, h is new, select h.
+                }
+                if (!HEAD.files.get(s).equals(split.files.get(s)) && !other.files.get(s).equals(split.files.get(s))) {
+                    Blob currentBlob = readObject(join(BLOB, HEAD.files.get(s)), Blob.class);
+                    Blob otherBlob = readObject(join(BLOB, other.files.get(s)), Blob.class);
+                    String current = new String(currentBlob.bytes, StandardCharsets.UTF_8);
+                    String otherContent = new String(otherBlob.bytes, StandardCharsets.UTF_8);
+                    String content = "<<<<<<< HEAD\n" + current + "\n=======\n"
+                        + otherContent + "\n>>>>>>>\n";
+                    File file = join(CWD, s);
+                    restrictedDelete(file);
+                    file.createNewFile();
+                    writeContents(file, content);
+                    Blob blob = new Blob(s);
+                    blob.toFile();
+                    result.put(s, blob.name);
+                    flag = true;
+                    continue; // if o != s, h != s, meet a conflict.
+                }
+            }
+            if (!split.files.containsKey(s) && !other.files.containsKey(s) && HEAD.files.containsKey(s)) {
+                result.put(s, HEAD.files.get(s));
+                continue; // if s == 0, o == 0, but in h, select h.
+            }
+            if (!split.files.containsKey(s) && !HEAD.files.containsKey(s) && other.files.containsKey(s)) {
+                result.put(s, other.files.get(s));
+                continue; // if s == 0, h == 0, but in o, select o.
+            }
+            if (split.files.containsKey(s)) {
+                if (HEAD.files.containsKey(s) && HEAD.files.get(s).equals(split.files.get(s)) && !other.files.containsKey(s)) {
+                    continue; // s == h, o == 0, remove.
+                }
+            }
+        }
+        if (flag) {
+            System.out.println("Encountered a merge conflict.");
+        }
+        Commit res = new Commit(HEAD, other, result);
+        for (String s : HEAD.files.keySet()) {
+            restrictedDelete(s);
+        }
+        for (String s : res.files.keySet()) {
+            checkoutHelper(res, s);
+        }
+        HEAD = res;
+        branch = HEAD.branchID;
+        pointers.put(branch, HEAD);
+        quickStore(res);
+
     }
 
     private void preTest(String name) {
@@ -405,7 +485,8 @@ public class Repository implements Serializable {
         List<String> list = plainFilenamesIn(CWD);
         for (String s : list) {
             if (!HEAD.files.containsKey(s) && pointers.get(name).files.containsKey(s)) {
-                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                System.out.println(
+                    "There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);
             }
         }

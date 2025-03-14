@@ -52,11 +52,13 @@ public class Staging implements Serializable {
         }
         toFile();
     }
+
     public void clear() throws IOException {
         store.clear();
         delete.clear();
         toFile();
     }
+
     public boolean isEmpty() {
         return store.isEmpty() && delete.isEmpty();
     }
