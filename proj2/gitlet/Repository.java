@@ -141,6 +141,7 @@ public class Repository implements Serializable {
         }
         if (!hasFound) {
             System.out.println("Found no commit with that message.");
+            System.exit(0);
         }
     }
 
@@ -380,9 +381,12 @@ public class Repository implements Serializable {
         return getString(num + 1, s, res, max);
     }
 
-    public void merge(String branchName) {
+    public void merge(String branchName) throws IOException {
         constructor();
         preTest(branchName);
+        Commit merged = pointers.get(branchName);
+        Commit split = findSplit(merged);
+        inTest(merged, split);
     }
 
     private void preTest(String name) {
@@ -405,6 +409,52 @@ public class Repository implements Serializable {
                 System.exit(0);
             }
         }
+    }
+
+    private void inTest(Commit branch, Commit split) throws IOException {
+        if (split.commitID.equals(HEAD.commitID)) {
+            HEAD = branch;
+            this.branch = branch.branchID;
+            quickStore(HEAD);
+            System.out.println("Current branch fast-forwarded.");
+            System.exit(0);
+        }
+        if (split.commitID.equals(branch.commitID)) {
+            System.out.println("Given branch is an ancestor of the current branch.");
+            System.exit(0);
+        }
+    }
+
+    private HashMap<String, Integer> BFS(Commit commit, HashMap<String, Integer> res, int depth) {
+        if (commit == null) {
+            return res;
+        }
+        res.put(commit.commitID, depth);
+        if (commit.parent0 != null) {
+            Commit parent0 = readObject(join(COMMITFILE, commit.parent0), Commit.class);
+            BFS(parent0, res, depth + 1);
+        }
+        if (commit.parent1 != null) {
+            Commit parent1 = readObject(join(COMMITFILE, commit.parent1), Commit.class);
+            BFS(parent1, res, depth + 1);
+        }
+        return res;
+    }
+
+    private Commit findSplit(Commit branch) {
+        HashMap<String, Integer> currentMap = BFS(HEAD, new HashMap<>(), 0);
+        HashMap<String, Integer> branchMap = BFS(branch, new HashMap<>(), 0);
+        String minkey = "";
+        int minval = Integer.MAX_VALUE;
+        for (String commit : currentMap.keySet()) {
+            if (branchMap.containsKey(commit)) {
+                if (branchMap.get(commit) < minval) {
+                    minval = branchMap.get(commit);
+                    minkey = commit;
+                }
+            }
+        }
+        return readObject(join(COMMITFILE, minkey), Commit.class);
     }
 
 

@@ -103,6 +103,13 @@ public class Main {
                     repository.init();
                     repository.add("123");
                     repository.commit("123");
+                    repository.branch("new");
+                    repository.add("456");
+                    repository.commit("456");
+                    repository.checkoutBranch("new");
+                    repository.add("789");
+                    repository.commit("789");
+                    repository.merge("master");
                     break;
                 default:
                     System.out.println("No command with that name exists.");
