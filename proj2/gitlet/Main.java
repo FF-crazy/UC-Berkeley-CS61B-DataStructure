@@ -98,15 +98,6 @@ public class Main {
                     checkLength(2, args);
                     repository.merge(args[1]);
                     break;
-                //TODO:
-                case "test":
-                    repository.init();
-                    repository.add("g");
-                    repository.add("f");
-                    repository.commit("2");
-                    repository.branch("other");
-
-                    break;
                 default:
                     System.out.println("No command with that name exists.");
                     System.exit(0);

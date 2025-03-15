@@ -18,14 +18,14 @@ public class Staging implements Serializable {
         delete = new HashMap<>();
     }
 
-    public void add(String name, Commit HEAD) throws IOException {
+    public void add(String name, Commit head) throws IOException {
         if (delete.containsKey(name)) {
             Blob blob = delete.remove(name);
             toFile();
         }
         if (join(CWD, name).exists()) {
             Blob blob = new Blob(name);
-            if (blob.name.equals(HEAD.files.get(name))) {
+            if (blob.name.equals(head.files.get(name))) {
                 return;
             }
             store.put(name, blob);
@@ -36,11 +36,11 @@ public class Staging implements Serializable {
         }
     }
 
-    public void rm(String name, Commit HEAD) throws IOException {
+    public void rm(String name, Commit head) throws IOException {
         if (store.containsKey(name)) {
             store.remove(name);
-        } else if (HEAD.files.containsKey(name)) {
-            String temp = HEAD.files.get(name);
+        } else if (head.files.containsKey(name)) {
+            String temp = head.files.get(name);
             File file = join(BLOB, temp);
             Blob blob = readObject(file, Blob.class);
             delete.put(name, blob);

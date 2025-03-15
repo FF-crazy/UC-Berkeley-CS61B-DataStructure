@@ -2,7 +2,6 @@ package gitlet;
 
 import static gitlet.Utils.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -89,12 +88,6 @@ public class Commit implements Serializable {
             files.put(s, parent.files.get(s));
         }
         commitID = sha1(this.toString());
-    }
-
-    public void toFile() throws IOException {
-        File file = join(COMMITFILE, this.commitID);
-        file.createNewFile();
-        writeObject(file, this);
     }
 
     @Override

@@ -17,11 +17,10 @@ import static gitlet.Utils.*;
 public class Repository implements Serializable {
 
     /**
-     * TODO: add instance variables here.
      * <p>
-     * List all instance variables of the Repository class here with a useful
-     * comment above them describing what that variable represents and how that
-     * variable is used. We've provided two examples for you.
+     * List all instance variables of the Repository class here with a useful comment above them
+     * describing what that variable represents and how that variable is used. We've provided two
+     * examples for you.
      */
     private Staging staging;
     private static Commit head;
@@ -399,12 +398,15 @@ public class Repository implements Serializable {
         fileset.addAll(split.files.keySet());
         HashMap<String, String> result = new HashMap<>();
         for (String s : fileset) {
-            if (head.files.containsKey(s) && other.files.containsKey(s) && split.files.containsKey(s)) {
-                if (head.files.get(s).equals(other.files.get(s)) && other.files.get(s).equals(split.files.get(s))) {
+            if (head.files.containsKey(s) && other.files.containsKey(s) && split.files.containsKey(
+                s)) {
+                if (head.files.get(s).equals(other.files.get(s)) && other.files.get(s)
+                    .equals(split.files.get(s))) {
                     result.put(s, head.files.get(s));
                     continue; // if h, o, s equal, then select anyone.
                 }
-                if (head.files.get(s).equals(split.files.get(s)) && !head.files.get(s).equals(other.files.get(s))) {
+                if (head.files.get(s).equals(split.files.get(s)) && !head.files.get(s)
+                    .equals(other.files.get(s))) {
                     result.put(s, other.files.get(s));
                     continue; // if h == s, but o != h, m is new, select o.
                 }
@@ -413,7 +415,8 @@ public class Repository implements Serializable {
                     result.put(s, head.files.get(s));
                     continue; // if o == s, but h != o, h is new, select h.
                 }
-                if (!head.files.get(s).equals(split.files.get(s)) && !other.files.get(s).equals(split.files.get(s))) {
+                if (!head.files.get(s).equals(split.files.get(s)) && !other.files.get(s)
+                    .equals(split.files.get(s))) {
                     Blob currentBlob = readObject(join(BLOB, head.files.get(s)), Blob.class);
                     Blob otherBlob = readObject(join(BLOB, other.files.get(s)), Blob.class);
                     String current = new String(currentBlob.bytes, StandardCharsets.UTF_8);
@@ -431,16 +434,19 @@ public class Repository implements Serializable {
                     continue; // if o != s, h != s, meet a conflict.
                 }
             }
-            if (!split.files.containsKey(s) && !other.files.containsKey(s) && head.files.containsKey(s)) {
+            if (!split.files.containsKey(s) && !other.files.containsKey(s)
+                && head.files.containsKey(s)) {
                 result.put(s, head.files.get(s));
                 continue; // if s == 0, o == 0, but in h, select h.
             }
-            if (!split.files.containsKey(s) && !head.files.containsKey(s) && other.files.containsKey(s)) {
+            if (!split.files.containsKey(s) && !head.files.containsKey(s)
+                && other.files.containsKey(s)) {
                 result.put(s, other.files.get(s));
                 continue; // if s == 0, h == 0, but in o, select o.
             }
             if (split.files.containsKey(s)) {
-                if (head.files.containsKey(s) && !head.files.get(s).equals(split.files.get(s)) && !other.files.containsKey(s)) {
+                if (head.files.containsKey(s) && !head.files.get(s).equals(split.files.get(s))
+                    && !other.files.containsKey(s)) {
                     Blob currentBlob = readObject(join(BLOB, head.files.get(s)), Blob.class);
                     String current = new String(currentBlob.bytes, StandardCharsets.UTF_8);
                     String content = "<<<<<<< HEAD\n" + current + "=======\n"
@@ -455,7 +461,8 @@ public class Repository implements Serializable {
                     flag = true;
                     continue; // if o != s, h != s, meet a conflict.
                 }
-                if (other.files.containsKey(s) && !other.files.get(s).equals(split.files.get(s)) && !head.files.containsKey(s)) {
+                if (other.files.containsKey(s) && !other.files.get(s).equals(split.files.get(s))
+                    && !head.files.containsKey(s)) {
                     Blob otherBlob = readObject(join(BLOB, other.files.get(s)), Blob.class);
                     String otherContent = new String(otherBlob.bytes, StandardCharsets.UTF_8);
                     String content = "<<<<<<< HEAD\n" + "" + "=======\n"
@@ -504,7 +511,8 @@ public class Repository implements Serializable {
         }
         List<String> list = plainFilenamesIn(CWD);
         for (String s : list) {
-            if (!head.files.containsKey(s) && readObject(join(COMMITFILE, pointers.get(name)), Commit.class).files.containsKey(s)) {
+            if (!head.files.containsKey(s) && readObject(join(COMMITFILE, pointers.get(name)),
+                Commit.class).files.containsKey(s)) {
                 System.out.println(
                     "There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);
@@ -527,25 +535,25 @@ public class Repository implements Serializable {
         }
     }
 
-    private HashMap<String, Integer> BFS(Commit commit, HashMap<String, Integer> res, int depth) {
+    private HashMap<String, Integer> deepFirstSearch(Commit commit, HashMap<String, Integer> res, int depth) {
         if (commit == null) {
             return res;
         }
         res.put(commit.commitID, depth);
         if (commit.parent0 != null) {
             Commit parent0 = readObject(join(COMMITFILE, commit.parent0), Commit.class);
-            BFS(parent0, res, depth + 1);
+            deepFirstSearch(parent0, res, depth + 1);
         }
         if (commit.parent1 != null) {
             Commit parent1 = readObject(join(COMMITFILE, commit.parent1), Commit.class);
-            BFS(parent1, res, depth + 1);
+            deepFirstSearch(parent1, res, depth + 1);
         }
         return res;
     }
 
     private Commit findSplit(Commit branch) {
-        HashMap<String, Integer> currentMap = BFS(head, new HashMap<>(), 0);
-        HashMap<String, Integer> branchMap = BFS(branch, new HashMap<>(), 0);
+        HashMap<String, Integer> currentMap = deepFirstSearch(head, new HashMap<>(), 0);
+        HashMap<String, Integer> branchMap = deepFirstSearch(branch, new HashMap<>(), 0);
         String minkey = "";
         int minval = Integer.MAX_VALUE;
         for (String commit : currentMap.keySet()) {
