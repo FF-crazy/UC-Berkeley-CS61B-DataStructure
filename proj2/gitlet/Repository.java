@@ -26,7 +26,7 @@ public class Repository implements Serializable {
     private Staging staging;
     private static Commit HEAD;
     private String branch;
-    private HashMap<String, Commit> pointers;
+    private HashMap<String, String> pointers;
 
     public Repository() {
         // Do nothing
@@ -36,7 +36,7 @@ public class Repository implements Serializable {
         HEAD = readObject(join(POINTER, "HEAD"), Commit.class);
         HEAD = readObject(join(COMMITFILE, HEAD.commitID), Commit.class);
         branch = readObject(join(POINTER, "branch"), String.class);
-        pointers = (HashMap<String, Commit>) readObject(join(POINTER, "pointers"), HashMap.class);
+        pointers = (HashMap<String, String>) readObject(join(POINTER, "pointers"), HashMap.class);
         staging = readObject(join(STAGING, "staging"), Staging.class);
     }
 
@@ -63,7 +63,7 @@ public class Repository implements Serializable {
         pointers = new HashMap<>();
         HEAD = first;
         branch = "master";
-        pointers.put("master", first);
+        pointers.put("master", HEAD.commitID);
         staging.toFile();
         quickStore(first);
     }
@@ -91,7 +91,7 @@ public class Repository implements Serializable {
         }
         Commit newcommit = new Commit(message, HEAD, staging, branch);
         HEAD = newcommit;
-        pointers.put(branch, HEAD);
+        pointers.put(branch, HEAD.commitID);
         quickStore(newcommit);
         staging.clear();
     }
@@ -196,9 +196,7 @@ public class Repository implements Serializable {
             System.out.println("A branch with that name already exists.");
             System.exit(0);
         }
-        Commit newcommit = HEAD;
-        newcommit.branchID = name;
-        pointers.put(name, newcommit);
+        pointers.put(name, HEAD.commitID);
         quickStore(HEAD);
     }
 
@@ -252,7 +250,7 @@ public class Repository implements Serializable {
             System.exit(0);
         }
         List<String> list = plainFilenamesIn(CWD);
-        Commit commit = pointers.get(name);
+        Commit commit = readObject(join(COMMITFILE, pointers.get(name)), Commit.class);
         for (String s : list) {
             if (!HEAD.files.containsKey(s) && commit.files.containsKey(s)) {
                 System.out.println(
@@ -312,7 +310,7 @@ public class Repository implements Serializable {
                 }
                 HEAD = commit;
                 branch = HEAD.branchID;
-                pointers.put(branch, HEAD);
+                pointers.put(branch, HEAD.commitID);
                 staging.clear();
                 staging.toFile();
                 quickStore(HEAD);
@@ -391,20 +389,14 @@ public class Repository implements Serializable {
     public void merge(String branchName) throws IOException {
         constructor();
         preTest(branchName);
-        Commit other = pointers.get(branchName);
+        Commit other = readObject(join(COMMITFILE, pointers.get(branchName)), Commit.class);
         Commit split = findSplit(other);
         inTest(other, split);
         Set<String> fileset = new TreeSet<>();
         boolean flag = false;
-        for (String s : HEAD.files.keySet()) {
-            fileset.add(s);
-        }
-        for (String s : other.files.keySet()) {
-            fileset.add(s);
-        }
-        for (String s : split.files.keySet()) {
-            fileset.add(s);
-        }
+        fileset.addAll(HEAD.files.keySet());
+        fileset.addAll(other.files.keySet());
+        fileset.addAll(split.files.keySet());
         HashMap<String, String> result = new HashMap<>();
         for (String s : fileset) {
             if (HEAD.files.containsKey(s) && other.files.containsKey(s) && split.files.containsKey(s)) {
@@ -426,7 +418,7 @@ public class Repository implements Serializable {
                     String current = new String(currentBlob.bytes, StandardCharsets.UTF_8);
                     String otherContent = new String(otherBlob.bytes, StandardCharsets.UTF_8);
                     String content = "<<<<<<< HEAD\n" + current + "\n=======\n"
-                        + otherContent + "\n>>>>>>>\n";
+                        + otherContent + "\n>>>>>>>";
                     File file = join(CWD, s);
                     restrictedDelete(file);
                     file.createNewFile();
@@ -464,7 +456,7 @@ public class Repository implements Serializable {
         }
         HEAD = res;
         branch = HEAD.branchID;
-        pointers.put(branch, HEAD);
+        pointers.put(branch, HEAD.commitID);
         quickStore(res);
 
     }
@@ -484,7 +476,7 @@ public class Repository implements Serializable {
         }
         List<String> list = plainFilenamesIn(CWD);
         for (String s : list) {
-            if (!HEAD.files.containsKey(s) && pointers.get(name).files.containsKey(s)) {
+            if (!HEAD.files.containsKey(s) && readObject(join(COMMITFILE, pointers.get(name)), Commit.class).files.containsKey(s)) {
                 System.out.println(
                     "There is an untracked file in the way; delete it, or add and commit it first.");
                 System.exit(0);

@@ -73,8 +73,22 @@ public class Commit implements Serializable {
         parent1 = null;
         timestamp = "Wed Dec 31 16:00:00 1969 -0800";
         files = new HashMap<>();
-        commitID = sha1(this.toString());
         branchID = "master";
+        commitID = sha1(this.toString());
+    }
+
+    // using foe deep copy
+    public Commit(Commit parent) {
+        message = parent.message;
+        parent0 = parent.parent0;
+        parent1 = parent.parent1;
+        timestamp = parent.timestamp;
+        branchID = parent.branchID;
+        files = new HashMap<>();
+        for (String s : parent.files.keySet()) {
+            files.put(s, parent.files.get(s));
+        }
+        commitID = sha1(this.toString());
     }
 
     public void toFile() throws IOException {

@@ -105,15 +105,7 @@ public class Main {
                     repository.add("f");
                     repository.commit("2");
                     repository.branch("other");
-                    repository.add("h");
-                    repository.rm("g");
-                    repository.commit("-+");
-                    repository.checkoutBranch("other");
-                    repository.rm("f");
-                    repository.add("k");
-                    repository.commit("-+");
-                    repository.checkoutBranch("master");
-                    repository.merge("other");
+
                     break;
                 default:
                     System.out.println("No command with that name exists.");
