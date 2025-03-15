@@ -417,8 +417,8 @@ public class Repository implements Serializable {
                     Blob otherBlob = readObject(join(BLOB, other.files.get(s)), Blob.class);
                     String current = new String(currentBlob.bytes, StandardCharsets.UTF_8);
                     String otherContent = new String(otherBlob.bytes, StandardCharsets.UTF_8);
-                    String content = "<<<<<<< HEAD\n" + current + "\n=======\n"
-                        + otherContent + "\n>>>>>>>";
+                    String content = "<<<<<<< HEAD\n" + current + "=======\n"
+                        + otherContent + ">>>>>>>\n";
                     File file = join(CWD, s);
                     restrictedDelete(file);
                     file.createNewFile();
