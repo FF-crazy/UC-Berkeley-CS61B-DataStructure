@@ -1,3 +1,5 @@
+import java.util.Arrays;
+import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -126,6 +128,18 @@ public class UnitTest {
     System.out.println(trie.getValue("H"));
     System.out.println(trie.collect());
     System.out.println(trie.keyWithPrefix("H"));
+  }
+
+  @Test
+  public void bubbleSort() {
+    int[] arr = new int[10];
+    Random random = new Random(2048);
+    for (int i = 0; i < 10; i++) {
+      arr[i] = random.nextInt(100);
+    }
+    int[] output = Sort.quickSort(arr);
+    Arrays.sort(arr);
+    Assert.assertArrayEquals(arr, output);
   }
 }
 
