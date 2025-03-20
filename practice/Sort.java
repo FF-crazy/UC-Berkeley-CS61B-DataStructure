@@ -132,25 +132,29 @@ public class Sort {
 
   private static void quickSort(int[] arr, int left, int right) {
     if (left < right) {
-      int pivot = partation(arr, left, right);
+      int pivot = partition(arr, left, right);
       quickSort(arr, left, pivot - 1);
       quickSort(arr, pivot + 1, right);
     }
   }
 
-  private static int partation(int[] arr, int left, int right) {
-    int pivotIndex = (left + right) / 2;
-    int pivot = arr[pivotIndex];
-    swap(arr, pivotIndex, right);
-    int i = left;
-    for (int j = left; j < right; j++) {
-      if (arr[j] < pivot) {
-        swap(arr, i, j);
+  private static int partition(int[] arr, int left, int right) {
+    int i = left + 1;
+    int j = right;
+    while (true) {
+      while (i <= right  && arr[i] < arr[left]) {
         i++;
       }
+      while (j >= left + 1 && arr[j] >= arr[left]) {
+        j--;
+      }
+      if (i >= j) {
+        break;
+      }
+      swap(arr, i, j);
     }
-    swap(arr, i, right);
-    return i;
+    swap(arr, j, left);
+    return j;
   }
   private static void swap(int[] arr, int i, int j) {
     if (i != j) {
