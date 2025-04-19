@@ -40,24 +40,34 @@ public class HexWorld {
   private static TETile randomColor() {
     int type = RANDOM.nextInt(8);
     switch (type) {
-      case 0: return Tileset.AVATAR;
-      case 1: return Tileset.WALL;
-      case 2: return Tileset.FLOOR;
-      case 3: return Tileset.GRASS;
-      case 4: return Tileset.WATER;
-      case 5: return Tileset.SAND;
-      case 6: return Tileset.MOUNTAIN;
-      case 7: return Tileset.TREE;
+      case 0:
+        return Tileset.AVATAR;
+      case 1:
+        return Tileset.WALL;
+      case 2:
+        return Tileset.FLOOR;
+      case 3:
+        return Tileset.GRASS;
+      case 4:
+        return Tileset.WATER;
+      case 5:
+        return Tileset.SAND;
+      case 6:
+        return Tileset.MOUNTAIN;
+      case 7:
+        return Tileset.TREE;
     }
     return null;
   }
 
   private static TETile[][] createHex(TETile[][] board, int i, int j, int size) {
-    TETile type = randomColor();
-    createHex(board, i, j, (int) Math.ceil( (double) size / 4.0), (int) Math.ceil( (double) size / 4.0) + 1, type);
+    TETile type = TETile.colorVariant(randomColor(), 255, 255, 255, RANDOM);
+    createHex(board, i, j, (int) Math.ceil((double) size / 4.0),
+        (int) Math.ceil((double) size / 4.0) + 1, type);
     return board;
 
   }
+
   private static void createHex(TETile[][] board, int i, int j, int b, int f, TETile type) {
     for (int k = 0; k < f; k++) {
       board[i + b + k][j] = type;
@@ -69,8 +79,9 @@ public class HexWorld {
       board[i + b + k][j + b * 2 + 1] = type;
     }
   }
+
   private static void fillBoard(TETile[][] board, int size) {
-    int min = (int) Math.ceil( (double) size / 4.0);
+    int min = (int) Math.ceil((double) size / 4.0);
     int height = min * 2 + 2;
     int witdh = min + size + 1;
     for (int i = 0; i <= WIDTH - size; i += witdh) {
