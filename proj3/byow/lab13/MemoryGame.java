@@ -85,8 +85,6 @@ public class MemoryGame {
   }
 
   public void drawFrame(String s, String upper) {
-    //TODO: Take the string and display it in the center of the screen
-    //TODO: If game is not over, display relevant game information at the top of the screen
     StdDraw.clear(Color.black);
     Font font = new Font("Monaco", Font.BOLD, 30);
     StdDraw.setFont(font);
@@ -115,7 +113,6 @@ public class MemoryGame {
   }
 
   public String solicitNCharsInput(int n) {
-    //TODO: Read n letters of player input
     StringBuilder s = new StringBuilder();
     while (n != 0) {
       if (StdDraw.hasNextKeyTyped()) {
@@ -132,8 +129,6 @@ public class MemoryGame {
   }
 
   public void startGame() throws InterruptedException {
-    //TODO: Set any relevant variables before the game starts
-    //TODO: Establish Engine loop
     while (!gameOver) {
       drawFrame("Round: " + round, "Watch!");
       Thread.sleep(1000);
