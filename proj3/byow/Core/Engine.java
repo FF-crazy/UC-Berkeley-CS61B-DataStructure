@@ -14,8 +14,8 @@ public class Engine {
 
   private TERenderer ter;
   /* Feel free to change the width and height. */
-  public static final int WIDTH = 20;
-  public static final int HEIGHT = 20;
+  public static final int WIDTH = 50;
+  public static final int HEIGHT = 50;
   private Random random;
   private TETile[][] tetile;
   private int width;
@@ -23,8 +23,8 @@ public class Engine {
 
 
   public Engine() {
-    ter = new TERenderer();
-    ter.initialize(WIDTH, HEIGHT);
+//    ter = new TERenderer();
+//    ter.initialize(WIDTH, HEIGHT);
   }
 
   /**
@@ -62,7 +62,7 @@ public class Engine {
     createBound(width + 1, height + 1);
     divide(0, 0, width+1, height+1);
     bfs(1, 1);
-    ter.renderFrame(tetile);
+//    ter.renderFrame(tetile);
     return tetile;
   }
 
@@ -221,7 +221,6 @@ public class Engine {
     if (selectDirection(x2 - x1, y2 - y1)) {
       int y = RandomUtils.uniform(random, y1 + 2, y2-1);
       int x = horizontal(x1, x2, y);
-      ter.renderFrame(tetile);
       divide(x1, y1, x, y);
       divide(x, y1, x2, y);
       divide(x1, y, x, y2);
