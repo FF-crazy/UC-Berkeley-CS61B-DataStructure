@@ -44,7 +44,7 @@ public class Engine {
    *
    * @param input the input string to feed to your program
    */
-  public void interactWithInputString(String input) {
+  public TETile[][] interactWithInputString(String input) {
     // TODO: Fill out this method so that it run the engine using the input
     // passed in as an argument, and return a 2D tile representation of the
     // world that would have been drawn if the same inputs had been given
@@ -55,7 +55,7 @@ public class Engine {
     boolean flag = initialize(input);
     if (!flag) {
       System.out.println("Undefined Behavior!\n");
-      return;
+      return null;
     }
     width = RandomUtils.uniform(random, WIDTH / 5 * 4, WIDTH-1);
     height = RandomUtils.uniform(random, HEIGHT / 5 * 4, HEIGHT-1);
@@ -63,24 +63,28 @@ public class Engine {
     divide(0, 0, width+1, height+1);
     bfs(1, 1);
     ter.renderFrame(tetile);
+    return tetile;
   }
 
   /**
    * Method used for exploring a fresh world. This method should handle all inputs, including inputs
    * from the main menu.
    */
-  public void interactWithKeyboard() {
+  public TETile[][] interactWithKeyboard() {
     Menu menu = new Menu(WIDTH, HEIGHT);
     String input = menu.freshAndGetString();
     menu.close();
     boolean flag = initialize(input);
     if (!flag) {
       System.out.println("Undefined Behavior!\n");
-      return;
+      return null;
     }
     width = RandomUtils.uniform(random, WIDTH / 3 * 2, WIDTH);
     height = RandomUtils.uniform(random, HEIGHT / 3 * 2, HEIGHT);
-    divide(1, 1, width, height);
+    divide(0, 0, width, height);
+    bfs(1, 1);
+    ter.renderFrame(tetile);
+    return tetile;
   }
 
   private boolean initialize(String input) {
