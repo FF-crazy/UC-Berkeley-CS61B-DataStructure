@@ -123,66 +123,15 @@ public class Engine {
   }
 
   private boolean checkSeedValid(String s) {
-    if (s.length() < 19) {
+    if (s == null || s.isEmpty()) {
+      return false;
+    }
+    try {
+      Long.parseLong(s);
       return true;
-    } else if (s.length() > 19) {
+    } catch (NumberFormatException e) {
       return false;
     }
-    if (s.charAt(1) > '2') {
-      return false;
-    }
-    if (s.charAt(2) > '2') {
-      return false;
-    }
-    if (s.charAt(3) > '3') {
-      return false;
-    }
-    if (s.charAt(4) > '3') {
-      return false;
-    }
-    if (s.charAt(5) > '7') {
-      return false;
-    }
-    if (s.charAt(6) > '2') {
-      return false;
-    }
-    if (s.charAt(7) > '0') {
-      return false;
-    }
-    if (s.charAt(8) > '3') {
-      return false;
-    }
-    if (s.charAt(9) > '6') {
-      return false;
-    }
-    if (s.charAt(10) > '8') {
-      return false;
-    }
-    if (s.charAt(11) > '5') {
-      return false;
-    }
-    if (s.charAt(12) > '4') {
-      return false;
-    }
-    if (s.charAt(13) > '7') {
-      return false;
-    }
-    if (s.charAt(14) > '7') {
-      return false;
-    }
-    if (s.charAt(15) > '5') {
-      return false;
-    }
-    if (s.charAt(16) > '8') {
-      return false;
-    }
-    if (s.charAt(17) > '0') {
-      return false;
-    }
-    if (s.charAt(18) > '7') {
-      return false;
-    }
-    return true;
   }
 
   public String toString() {
