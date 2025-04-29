@@ -6,6 +6,7 @@ import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
 import java.awt.Color;
 import java.awt.Font;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
@@ -13,8 +14,8 @@ public class Engine {
 
   private TERenderer ter;
   /* Feel free to change the width and height. */
-  public static final int WIDTH = 50;
-  public static final int HEIGHT = 50;
+  public static final int WIDTH = 20;
+  public static final int HEIGHT = 20;
   private Random random;
   private TETile[][] tetile;
   private int width;
@@ -60,7 +61,7 @@ public class Engine {
     height = RandomUtils.uniform(random, HEIGHT / 5 * 4, HEIGHT-1);
     createBound(width + 1, height + 1);
     divide(0, 0, width+1, height+1);
-    bfs();
+    bfs(1, 1);
     ter.renderFrame(tetile);
   }
 
@@ -182,11 +183,11 @@ public class Engine {
 
   public String toString() {
     StringBuilder s = new StringBuilder();
-    for (int i = 0; i < WIDTH; i++) {
-      for (int j = HEIGHT - 1; j > -1; j--) {
-        s.append(tetile[i][j].character());
-      }
-      s.append('\n');
+   for (int j = HEIGHT - 1; j >= 0; j--) {
+     for (int i = 0; i < WIDTH; i++) {
+       s.append(tetile[i][j].character());
+     }
+     s.append('\n');
     }
     return s.toString();
   }
@@ -261,8 +262,37 @@ public class Engine {
     return gap;
   }
 
-  private void bfs() {
+  private void bfs(int startX, int startY) {
+    int width = tetile.length;
+    int height = tetile[0].length;
+    Queue<Position> queue = new LinkedList<>();
+    if (startX >= 0 && startX < width && startY >= 0 && startY < height &&
+        tetile[startX][startY] != Tileset.WALL) {
+      tetile[startX][startY] = Tileset.FLOOR;
+      queue.add(new Position(startX, startY));
+    } else {
+      System.err.println("BFS starting point (" + startX + ", " + startY + ") is invalid or a wall.");
+      return;
+    }
+    int[] dx = {0, 1, -1, 0};
+    int[] dy = {1, 0, 0, -1};
+    while (!queue.isEmpty()) {
+      Position current = queue.remove();
+      int x = current.x;
+      int y = current.y;
+      for (int i = 0; i < 4; i++) {
+        int nextX = x + dx[i];
+        int nextY = y + dy[i];
+        if (nextX >= 0 && nextX < width && nextY >= 0 && nextY < height) {
+          if (tetile[nextX][nextY] != Tileset.WALL && tetile[nextX][nextY] != Tileset.FLOOR) {
+            tetile[nextX][nextY] = Tileset.FLOOR;
+            queue.add(new Position(nextX, nextY));
+          }
+        }
+      }
+    }
   }
+
 
 
   private class Menu {
