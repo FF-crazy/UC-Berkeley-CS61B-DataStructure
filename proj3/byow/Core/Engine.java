@@ -20,11 +20,15 @@ public class Engine {
   private TETile[][] tetile;
   private int width;
   private int height;
+  private Position position;
+  private boolean readyToQuit;
+  private long seed;
 
 
   public Engine() {
-//    ter = new TERenderer();
-//    ter.initialize(WIDTH, HEIGHT);
+    ter = new TERenderer();
+    ter.initialize(WIDTH, HEIGHT);
+    readyToQuit = false;
   }
 
   /**
@@ -45,7 +49,6 @@ public class Engine {
    * @param input the input string to feed to your program
    */
   public TETile[][] interactWithInputString(String input) {
-    // TODO: Fill out this method so that it run the engine using the input
     // passed in as an argument, and return a 2D tile representation of the
     // world that would have been drawn if the same inputs had been given
     // to interactWithKeyboard().
@@ -57,12 +60,8 @@ public class Engine {
       System.out.println("Undefined Behavior!\n");
       return null;
     }
-    width = RandomUtils.uniform(random, WIDTH / 5 * 4, WIDTH-1);
-    height = RandomUtils.uniform(random, HEIGHT / 5 * 4, HEIGHT-1);
-    createBound(width + 1, height + 1);
-    divide(0, 0, width+1, height+1);
-    bfs(1, 1);
-//    ter.renderFrame(tetile);
+    ter.renderFrame(tetile);
+    gameGoing();
     return tetile;
   }
 
@@ -79,11 +78,8 @@ public class Engine {
       System.out.println("Undefined Behavior!\n");
       return null;
     }
-    width = RandomUtils.uniform(random, WIDTH / 3 * 2, WIDTH);
-    height = RandomUtils.uniform(random, HEIGHT / 3 * 2, HEIGHT);
-    divide(0, 0, width, height);
-    bfs(1, 1);
     ter.renderFrame(tetile);
+    gameGoing();
     return tetile;
   }
 
@@ -93,9 +89,21 @@ public class Engine {
     if (number == -1) {
       return false;
     } else {
-      random = new Random(number);
-      return true;
+      seed = number;
+      random = new Random(seed);
     }
+    width = RandomUtils.uniform(random, WIDTH / 3 * 2, WIDTH-1);
+    height = RandomUtils.uniform(random, HEIGHT / 3 * 2, HEIGHT-1);
+    createBound(width + 1, height + 1);
+    divide(0, 0, width, height);
+    bfs(1, 1);
+    setAvatar();
+    if (input.charAt(0) == 'l' || input.charAt(0) == 'L') {
+      for (int i = 1; i < input.length(); i++) {
+        handleInteract(input.charAt(i));
+      }
+    }
+    return true;
   }
 
   private void initializeTETile() {
@@ -112,14 +120,72 @@ public class Engine {
     long res;
     switch (input.charAt(0)) {
       case 'N', 'n':
-        s = input.substring(1, input.length() - 1);
+        s = input.substring(1, finFirstS(input));
         if (!checkSeedValid(s)) {
           return -1;
         }
         res = Long.parseLong(s);
+        position = new Position(1, 1);
         return res;
+      case 'L', 'l' :
+        s = FileUtils.readFile();
+        int half = s.indexOf('\n');
+        int another = s.indexOf(' ');
+        position = new Position(Integer.parseInt(s, half + 1, another, 10), Integer.parseInt(s, another + 1, s.length() - 1, 10));
+        return Long.parseLong(s, 0, half, 10);
     }
     return -1;
+  }
+
+  private int finFirstS(String s) {
+    return s.indexOf('s') == -1 ? s.indexOf('S') : s.indexOf('s');
+  }
+
+  private void setAvatar() {
+    tetile[position.x][position.y] = Tileset.AVATAR;
+  }
+
+  private boolean handleInteract(char c) {
+    int x = position.x;
+    int y = position.y;
+    switch (c) {
+      case 'Q', 'q':
+      if (readyToQuit) {
+        FileUtils.toFile(seed, position.x, position.y);
+        return true;
+      }
+      break;
+      case 'A', 'a':
+        if (tetile[x-1][y] != Tileset.WALL) {
+          tetile[x][y] = Tileset.FLOOR;
+          position.reset(x-1, y);
+          setAvatar();
+        }
+        break;
+      case 'D', 'd' :
+        if (tetile[x+1][y] != Tileset.WALL) {
+          tetile[x][y] = Tileset.FLOOR;
+          position.reset(x+1, y);
+          setAvatar();
+        }
+        break;
+      case 'W', 'w':
+        if (tetile[x][y+1] != Tileset.WALL) {
+          tetile[x][y] = Tileset.FLOOR;
+          position.reset(x, y+1);
+          setAvatar();
+        }
+        break;
+      case 'S', 's':
+        if (tetile[x][y-1] != Tileset.WALL) {
+          tetile[x][y] = Tileset.FLOOR;
+          position.reset(x, y-1);
+          setAvatar();
+        }
+        break;
+    }
+    readyToQuit = c == ':';
+    return false;
   }
 
   private boolean checkSeedValid(String s) {
@@ -245,6 +311,17 @@ public class Engine {
     }
   }
 
+  private void gameGoing() {
+    while (true) {
+      if (StdDraw.hasNextKeyTyped()) {
+        if (handleInteract(StdDraw.nextKeyTyped())) {
+          return;
+        }
+        ter.renderFrame(tetile);
+      }
+    }
+  }
+
 
 
   private class Menu {
@@ -278,17 +355,16 @@ public class Engine {
     }
 
     public String freshAndGetString() {
-      boolean flag = true;
       StringBuilder sb = new StringBuilder();
       drawFrame(sb.toString());
-      while (flag) {
+      while (true) {
         if (StdDraw.hasNextKeyTyped()) {
           sb.append(StdDraw.nextKeyTyped());
           drawFrame(sb.toString());
         }
         String s = sb.toString();
-        if (!s.isEmpty() && (s.charAt(s.length() - 1) == 'S' || s.charAt(s.length() - 1) == 's')) {
-          flag = false;
+        if (!s.isEmpty() && (s.charAt(s.length() - 1) == 'S' || s.charAt(s.length() - 1) == 's' || s.charAt(s.length() - 1) == 'l' || s.charAt(s.length() - 1) == 'L')) {
+          break;
         }
       }
       return sb.toString();
@@ -301,6 +377,10 @@ public class Engine {
     private int x;
     private int y;
     public Position(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+    public void reset(int x, int y) {
       this.x = x;
       this.y = y;
     }
